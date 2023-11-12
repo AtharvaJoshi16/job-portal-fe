@@ -1,0 +1,69 @@
+@import "../commons/breakpoints.scss";
+.login {
+  margin: 60px auto;
+  border: 1px solid gray;
+  border-radius: 8px;
+  background-color: white;
+  width: fit-content;
+  @include breakpoint("sm") {
+    width: 320px;
+  }
+
+  @include breakpoint("md") {
+    width: 500px;
+  }
+
+  &__header {
+    background: white;
+    width: fit-content;
+    padding: 3px 8px;
+    margin: -15px auto auto;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+
+  &__form {
+    padding: 40px 40px 25px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    &__button {
+      margin-top: 15px;
+    }
+  }
+
+  &__create-account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &__link {
+      color: #0645ad;
+      cursor: pointer;
+    }
+  }
+
+  &__forgot-password {
+    p {
+      margin: 0;
+    }
+    display: flex;
+    justify-content: center;
+    color: #0645ad;
+    cursor: pointer;
+  }
+
+  &__google-login {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 0 40px 20px;
+    &__or {
+      letter-spacing: 2px;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+}

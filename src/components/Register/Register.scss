@@ -1,0 +1,61 @@
+@import "../commons/breakpoints.scss";
+
+.register {
+  margin: 60px auto;
+  border: 1px solid gray;
+  border-radius: 8px;
+  background-color: white;
+  width: fit-content;
+
+  @include breakpoint("sm") {
+    width: 320px;
+  }
+
+  @include breakpoint("md") {
+    width: 500px;
+  }
+
+  &__header {
+    background: white;
+    width: fit-content;
+    padding: 3px 8px;
+    margin: -15px auto auto;
+    letter-spacing: 2px;
+    font-weight: 700;
+  }
+
+  &__form-wrapper {
+    padding: 40px;
+
+    &__form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      &__button {
+        margin-top: 15px;
+      }
+
+      &__password-warning-text {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin: 4px;
+        color: red;
+
+        i {
+          margin-bottom: 4px;
+        }
+
+        p {
+          margin: 0;
+        }
+      }
+
+      &__email-wrapper {
+        display: flex;
+        gap: 5px;
+      }
+    }
+  }
+}
