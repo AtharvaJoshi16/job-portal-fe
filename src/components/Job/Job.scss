@@ -1,0 +1,124 @@
+@import "../commons/breakpoints.scss";
+
+.job {
+  padding: 8px;
+  width: 340px;
+  height: 405px;
+  box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+  border-radius: 8px;
+  border: 2px solid rgb(225, 225, 225);
+  position: relative;
+
+  @include breakpoint("md") {
+    width: 350px;
+  }
+
+  @include breakpoint("lg") {
+    width: 380px;
+  }
+  p {
+    margin: 0;
+  }
+  &__logo-role-wrapper {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    margin: 10px 30px;
+    &__logo {
+      width: 80px;
+      height: 80px;
+    }
+
+    &__role {
+      display: flex;
+      flex-direction: column;
+
+      &__text {
+        font-weight: bold;
+        font-size: large;
+        letter-spacing: 0.2px;
+        line-height: 24px;
+      }
+
+      &__org-text {
+        font-size: small;
+        color: rgb(126, 126, 126);
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+    }
+  }
+
+  &__about {
+    margin: 10px 20px;
+
+    &__text {
+      display: -webkit-box;
+      text-align: justify;
+      letter-spacing: 0.2px;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: small;
+      color: rgb(126, 126, 126);
+    }
+  }
+
+  &__date-posted {
+    margin: 5px 0 0 3px;
+    &__text {
+      font-size: x-small;
+      color: rgb(126, 126, 126);
+      letter-spacing: 0.3px;
+      font-weight: 600;
+    }
+  }
+
+  &__job-details {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 20px 15px 0 15px;
+
+    &__locations {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      &__wrapper {
+        line-height: 18px;
+      }
+
+      &__text {
+        font-size: small;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        color: rgb(126, 126, 126);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    margin: 0 15px;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 4px;
+    width: 85%;
+    &__left {
+      display: flex;
+      gap: 8px;
+    }
+
+    &__right {
+      display: flex;
+      gap: 5px;
+    }
+
+    &__comments {
+      position: absolute;
+    }
+  }
+}

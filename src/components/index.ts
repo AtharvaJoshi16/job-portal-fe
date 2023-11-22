@@ -4,3 +4,8 @@ export { default as ResetPassword } from "./ResetPassword";
 export { default as Profile } from "./Profile";
 export { default as Header } from "./Header";
 export { default as Home } from "./Home";
+export { default as Layout } from "./Layout";
+export { default as Job } from "./Job";
+export { default as Comments } from "./Comments";
+export { default as Jobs } from "./Jobs";
+export { default as Bookmarks } from "./Bookmarks";

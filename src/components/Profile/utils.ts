@@ -1,11 +1,12 @@
 import axios from "axios";
 import { UserProfileData } from "./Profile.model";
 
-export const onEdit = async (userProfileData: UserProfileData | null) => {
-  const { id, email } = JSON.parse(localStorage.user);
+const { id, email } = JSON.parse(localStorage.user);
+
+export const onEdit = async (UserProfileData: UserProfileData) => {
   const response = await axios.post(
     `http://localhost:8080/api/v1/add-profile?userId=${id}&email=${email}`,
-    userProfileData
+    UserProfileData
   );
   return response.data;
 };
@@ -14,6 +15,34 @@ export const getProfile = async (userId: string) => {
   const response = await axios.get(
     `http://localhost:8080/api/v1/get-profile?userId=${userId}`
   );
-  console.log(response.data);
   return response.data;
+};
+
+export const saveProfileImage = async (formData: FormData) => {
+  const response = await axios.post(
+    `http://localhost:8080/api/v1/upload-profile-image?userId=${id}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const getProfileImage = async () => {
+  const response = await axios.get(
+    `http://localhost:8080/api/v1/get-profile-image?userId=${id}`
+  );
+  if (response?.data?.code === 400 || response.data === null) {
+    return {
+      code: 400,
+      url: "/assets/dummy_profile_img.png",
+    };
+  } else {
+    return {
+      url: `http://localhost:8080/api/v1/get-profile-image?userId=${id}`,
+    };
+  }
 };

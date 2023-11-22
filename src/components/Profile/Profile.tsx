@@ -8,25 +8,30 @@ import {
   Skills,
   UserProfileData,
 } from "./Profile.model";
-import { Alert, AlertTitle } from "@mui/material";
+import { Alert, AlertColor, AlertTitle, CircularProgress } from "@mui/material";
+import { Modal } from "@mui/material";
 import "./Profile.scss";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import { Dropdown, DropdownButton, Form, InputGroup } from "react-bootstrap";
 import { IconButton } from "@mui/material";
-import { useState, useEffect } from "react";
-import { getProfile } from "./utils";
+import { useState, useEffect, useRef } from "react";
+import { getProfile, getProfileImage, saveProfileImage } from "./utils";
 import { profileSchema } from "./validation";
 import { useNavigate, useParams } from "react-router";
+import "react-image-crop/src/ReactCrop.scss";
+import ReactCrop, { Crop } from "react-image-crop";
+import { ProfileImageResponse } from "../types/ApiResponse";
 
 const Profile = ({ onEdit }: ProfileProps) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [countryCode, setCountryCode] = useState<string | null>("+91");
   const countryCodes = ["+91", "+37", "+61", "+89", "+72"];
-
   const formik = useFormik({
     initialValues: {
       gender: "",
@@ -61,7 +66,18 @@ const Profile = ({ onEdit }: ProfileProps) => {
       obj.certifications = certifications;
       obj.experience = experience;
       const response = await onEdit?.(obj);
-      alert(response?.message);
+      const formdata = new FormData();
+      if (profileImageObject) {
+        formdata.append("profileImage", profileImageObject);
+      }
+      await saveProfileImage(formdata);
+      if (response?.code === 200) {
+        setAlert({
+          message: "Profile Updated!",
+          variant: "success",
+        });
+        setVisibility(true);
+      }
     },
   });
 
@@ -70,15 +86,28 @@ const Profile = ({ onEdit }: ProfileProps) => {
   const [experience, setExperience] = useState<Experience[]>([]);
   const [isDisabled, setDisabled] = useState<boolean>(true);
   const [validationErrors, setErrors] = useState("");
-
+  const [alertMessage, setAlert] = useState({ message: "", variant: "" });
+  const [visibility, setVisibility] = useState(false);
+  const [profileImage, setImage] = useState("");
+  const [profileImageObject, setProfileObject] = useState<File | null>();
+  const [profileImageResponse, setImageResponse] =
+    useState<ProfileImageResponse>();
+  const [crop, setCrop] = useState<Crop>();
+  const [modalOpen, setOpen] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
   useEffect(() => {
     async function getProfileApi() {
       if (id) {
         const response = await getProfile(id);
-        formik.setValues(response?.profile);
-        setSkills(response?.profile?.skills);
-        setCertifications(response?.profile?.certifications);
-        setExperience(response?.profile?.experience);
+        if (response?.profile) {
+          formik.setValues(response?.profile);
+          setSkills(response?.profile?.skills);
+          setCertifications(response?.profile?.certifications);
+          setExperience(response?.profile?.experience);
+        }
+        const profileImageResponse = await getProfileImage();
+        setImageResponse(profileImageResponse);
+        localStorage.setItem("userProfileImage", profileImageResponse.url);
       } else {
         alert("Please login!");
         navigate("/login");
@@ -98,6 +127,7 @@ const Profile = ({ onEdit }: ProfileProps) => {
         .then(() => setErrors(""))
         .catch((err) => err?.message);
       setErrors(errors);
+      setVisibility(true);
     })();
   }, [formik.values, certifications, skillsArray, experience]);
 
@@ -156,15 +186,66 @@ const Profile = ({ onEdit }: ProfileProps) => {
     obj.experience = experience;
     if (await profileSchema.isValid(obj)) {
       formik.submitForm();
+      setDisabled(true);
+    }
+  };
+
+  const handleProfileImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target?.files) {
+      setImage(URL.createObjectURL(e.target?.files?.[0]));
+      setProfileObject(e.target?.files?.[0]);
+    }
+  };
+
+  const retrieveProfileImage = () => {
+    if (profileImage?.length) {
+      return profileImage;
+    }
+
+    if (profileImageResponse?.code === 400) {
+      return "/assets/dummy_profile_img.png";
+    }
+    if (profileImageResponse?.url) {
+      return profileImageResponse?.url;
     }
   };
 
   return (
     <>
-      {validationErrors && (
-        <Alert severity="error" className="profile__alert">
+      {validationErrors && visibility && (
+        <Alert
+          severity="error"
+          className="profile__alert"
+          action={
+            <IconButton
+              onClick={() => setVisibility(false)}
+              color="inherit"
+              size="small"
+            >
+              <CloseRoundedIcon />
+            </IconButton>
+          }
+        >
           <AlertTitle>Error</AlertTitle>
           {validationErrors}
+        </Alert>
+      )}
+      {alertMessage?.message && visibility && (
+        <Alert
+          severity={alertMessage?.variant as AlertColor}
+          className="profile__alert"
+          action={
+            <IconButton
+              onClick={() => setVisibility(false)}
+              color="inherit"
+              size="small"
+            >
+              <CloseRoundedIcon />
+            </IconButton>
+          }
+        >
+          <AlertTitle>Success</AlertTitle>
+          {alertMessage?.message}
         </Alert>
       )}
       <div className="profile">
@@ -184,7 +265,57 @@ const Profile = ({ onEdit }: ProfileProps) => {
             <TaskAltRoundedIcon color="success" />
           </IconButton>
         </div>
-        <Form className="profile__form" id="profile-form">
+        <Form
+          className="profile__form"
+          id="profile-form"
+          encType="multipart/form-data"
+        >
+          <div className="profile__form__image-section">
+            {profileImage || profileImageResponse?.url ? (
+              <img
+                ref={imageRef}
+                onClick={() => {
+                  setOpen(true);
+                }}
+                src={retrieveProfileImage()}
+                alt="user-profile"
+                className="profile__form__image-section__image"
+              />
+            ) : (
+              <CircularProgress />
+            )}
+            {modalOpen && (
+              <Modal open={modalOpen} onClose={() => setOpen(false)}>
+                <div className="profile__form__image-section__modal">
+                  <ReactCrop
+                    className="profile__form__image-section__modal__crop"
+                    crop={crop}
+                    onChange={(c) => setCrop(c)}
+                  >
+                    <img
+                      src={retrieveProfileImage()}
+                      alt="user-profile"
+                      className="profile__form__image-section__crop-view"
+                    />
+                  </ReactCrop>
+                </div>
+              </Modal>
+            )}
+            <label
+              htmlFor="input-file"
+              className="profile__form__image-section__label"
+            >
+              <AddCircleRoundedIcon color="primary" />
+            </label>
+            <input
+              type="file"
+              id="input-file"
+              name="profileImage"
+              multiple={false}
+              onChange={(e) => handleProfileImage(e)}
+              className="profile__form__image-section__input"
+            />
+          </div>
           <Form.Group className="profile__form__group">
             <Form.Label className="profile__form__group__label">
               Gender

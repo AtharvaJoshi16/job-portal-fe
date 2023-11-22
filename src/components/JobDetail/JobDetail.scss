@@ -1,0 +1,130 @@
+@import "../commons/breakpoints.scss";
+
+p {
+  margin: 0;
+}
+
+.job-detail {
+  margin: 30px 40px;
+  padding: 20px 40px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border-radius: 8px;
+
+  &__header-section {
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    &__logo {
+      width: 120px;
+      height: 120px;
+    }
+    &__right {
+      display: flex;
+      flex-direction: column;
+      p {
+        margin: 0;
+      }
+      &__role-org {
+        &__role {
+          font-weight: 700;
+          font-size: 35px;
+          @include breakpoint("lg") {
+            font-size: 40px;
+          }
+        }
+
+        &__org {
+          font-weight: 700;
+          margin-left: 20px;
+          letter-spacing: 0.3px;
+          color: rgb(126, 126, 126);
+        }
+      }
+
+      &__posted-diff {
+        letter-spacing: 0.4px;
+        font-weight: 700;
+        color: rgb(105, 105, 105);
+      }
+    }
+  }
+
+  &__information {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 30px 40px;
+    padding: 0 40px;
+    &__item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      &__text {
+        letter-spacing: 0.5px;
+        font-weight: 600;
+
+        &--grey {
+          color: rgb(105, 105, 105);
+        }
+      }
+
+      &__mode-ctc {
+        display: flex;
+        gap: 20px;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+      }
+
+      &__locations-text {
+        display: flex;
+        gap: 15px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  &__description {
+    margin: 20px 30px;
+    &__heading {
+      font-weight: bold;
+      letter-spacing: 0.4px;
+      font-size: 18px;
+    }
+
+    &__subheading {
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      font-size: 16px;
+      margin: 10px 20px 0 0;
+    }
+
+    &__about {
+      margin: 10px 20px;
+      text-align: justify;
+      font-weight: 400;
+      color: rgb(99, 99, 99);
+    }
+
+    &__lists {
+      &__list {
+        margin: 10px 0;
+        list-style-type: circle;
+        &__item {
+          color: rgb(99, 99, 99);
+          text-align: justify;
+          margin: 8px 0;
+        }
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 5px 30px;
+  }
+}

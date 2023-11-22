@@ -6,6 +6,5 @@ export const onLogin = async (userData: UserLoginData) => {
     "http://localhost:8080/api/v1/login",
     userData
   );
-  console.log(response);
   return response.data;
 };

@@ -3,3 +3,8 @@ export interface ApiResponse {
   message?: string;
   token?: string;
 }
+
+export interface ProfileImageResponse {
+  code?: number;
+  url?: string;
+}

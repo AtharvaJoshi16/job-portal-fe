@@ -1,0 +1,78 @@
+@import "../commons/breakpoints.scss";
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px,
+    rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px,
+    rgba(0, 0, 0, 0.07) 0px 16px 16px;
+  &__right-section {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  &__searchbar {
+    display: flex;
+    gap: 20px;
+
+    .btn-check:checked + .btn,
+    .btn.active,
+    .btn.show,
+    .btn:first-child:active,
+    :not(.btn-check) + .btn:active {
+      background-color: #01579b;
+    }
+
+    .dropdown-toggle {
+      background-color: #0288d1;
+
+      &:hover {
+        background-color: #01579b;
+      }
+    }
+    .dropdown-toggle::after {
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      display: inline-block;
+      padding: 3px;
+      transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+      margin-left: 10px;
+    }
+  }
+
+  &__navigation {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    width: 70%;
+    &__list {
+      list-style-type: none;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding-left: 0;
+      gap: 35px;
+
+      &__item {
+        color: rgb(81, 81, 81);
+        &:hover {
+          color: black;
+          cursor: pointer;
+        }
+
+        &__icon-link {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          p {
+            margin: 0;
+          }
+        }
+      }
+    }
+  }
+}

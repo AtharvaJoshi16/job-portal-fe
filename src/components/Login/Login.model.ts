@@ -4,7 +4,8 @@ export interface LoginPageProps {
 
 export interface UserLoginData {
   email: string;
-  password: string;
+  password?: string;
+  isGoogleLogin?: boolean;
 }
 
 export interface LoginApiResponse {
