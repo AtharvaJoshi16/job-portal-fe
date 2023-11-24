@@ -20,12 +20,19 @@ import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import { Dropdown, DropdownButton, Form, InputGroup } from "react-bootstrap";
 import { IconButton } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
-import { getProfile, getProfileImage, saveProfileImage } from "./utils";
+import {
+  getProfile,
+  getProfileImage,
+  getResumeFileName,
+  saveProfileImage,
+  saveResume,
+} from "./utils";
 import { profileSchema } from "./validation";
 import { useNavigate, useParams } from "react-router";
 import "react-image-crop/src/ReactCrop.scss";
 import ReactCrop, { Crop } from "react-image-crop";
 import { ProfileImageResponse } from "../types/ApiResponse";
+import FileUpload from "../FileUpload/FileUpload";
 
 const Profile = ({ onEdit }: ProfileProps) => {
   const { id } = useParams();
@@ -69,8 +76,8 @@ const Profile = ({ onEdit }: ProfileProps) => {
       const formdata = new FormData();
       if (profileImageObject) {
         formdata.append("profileImage", profileImageObject);
+        await saveProfileImage(formdata);
       }
-      await saveProfileImage(formdata);
       if (response?.code === 200) {
         setAlert({
           message: "Profile Updated!",
@@ -89,6 +96,8 @@ const Profile = ({ onEdit }: ProfileProps) => {
   const [alertMessage, setAlert] = useState({ message: "", variant: "" });
   const [visibility, setVisibility] = useState(false);
   const [profileImage, setImage] = useState("");
+  const [resumeFilename, setResumeFilename] = useState("");
+  const [resumeWarning, setResumeWarning] = useState("");
   const [profileImageObject, setProfileObject] = useState<File | null>();
   const [profileImageResponse, setImageResponse] =
     useState<ProfileImageResponse>();
@@ -108,6 +117,12 @@ const Profile = ({ onEdit }: ProfileProps) => {
         const profileImageResponse = await getProfileImage();
         setImageResponse(profileImageResponse);
         localStorage.setItem("userProfileImage", profileImageResponse.url);
+        const userResume = await getResumeFileName();
+        if (userResume?.filename) {
+          setResumeFilename(userResume?.filename);
+        } else {
+          setResumeFilename("No File Chosen");
+        }
       } else {
         alert("Please login!");
         navigate("/login");
@@ -208,6 +223,38 @@ const Profile = ({ onEdit }: ProfileProps) => {
     if (profileImageResponse?.url) {
       return profileImageResponse?.url;
     }
+  };
+
+  const handleResumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target?.files) {
+      const splitArray = e.target?.files?.[0]?.name.split(".");
+      const ext = splitArray[splitArray.length - 1];
+      if (ext !== "pdf") {
+        setResumeWarning("Only PDF files allowed");
+      } else {
+        setResumeFilename(e.target?.files?.[0]?.name);
+        setResumeWarning("");
+        const formdata = new FormData();
+        if (e.target?.files?.[0]) {
+          formdata.append("resume", e.target?.files?.[0]);
+          const response = await saveResume(formdata);
+          if (response?.code === 200) {
+            setAlert({ message: response?.message, variant: "success" });
+            setVisibility(true);
+          } else {
+            setAlert({
+              message: "Failed to upload resume",
+              variant: "error",
+            });
+            setVisibility(true);
+          }
+        }
+      }
+    }
+  };
+
+  const handleDownloadResume = async () => {
+    window.location.href = `http://localhost:8080/api/v1/get-resume?userId=${id}&download=true`;
   };
 
   return (
@@ -315,6 +362,23 @@ const Profile = ({ onEdit }: ProfileProps) => {
               onChange={(e) => handleProfileImage(e)}
               className="profile__form__image-section__input"
             />
+          </div>
+          <div className="profile__form__resume-wrapper">
+            <Form.Label className="profile__form__resume-wrapper__label">
+              Resume
+            </Form.Label>
+            <div className="profile__form__resume-wrapper__resume">
+              <FileUpload
+                resumeFilename={resumeFilename}
+                handleResumeChange={handleResumeChange}
+                handleDownloadResume={handleDownloadResume}
+              />
+            </div>
+            {resumeWarning && (
+              <p className="profile__form__resume-wrapper__warning">
+                {resumeWarning}
+              </p>
+            )}
           </div>
           <Form.Group className="profile__form__group">
             <Form.Label className="profile__form__group__label">

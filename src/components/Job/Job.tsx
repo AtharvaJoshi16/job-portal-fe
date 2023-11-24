@@ -10,11 +10,12 @@ import ModeCommentRoundedIcon from "@mui/icons-material/ModeCommentRounded";
 import NearMeRoundedIcon from "@mui/icons-material/NearMeRounded";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import "./Job.scss";
-import { IconButton } from "@mui/material";
+import { IconButton, Modal, Box } from "@mui/material";
 import { useState, useEffect } from "react";
 import { Comments } from "..";
 import { useNavigate } from "react-router";
 import { returnDateDifference } from "../JobDetail/utils";
+import FileUpload from "../FileUpload/FileUpload";
 
 const Job = ({
   _id,
@@ -36,6 +37,7 @@ const Job = ({
   const navigate = useNavigate();
   const [bookmarked, setBookmark] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [resumeModalOpen, setResumeModalOpen] = useState(false);
   const dateDiff = returnDateDifference(datePosted);
 
   useEffect(() => {
@@ -158,9 +160,42 @@ const Job = ({
           </IconButton>
         </div>
         <div className="job__actions__right">
-          <IconButton title="Apply" size="large" color="info">
+          <IconButton
+            onClick={() => setResumeModalOpen(true)}
+            title="Apply"
+            size="large"
+            color="info"
+          >
             <NearMeRoundedIcon fontSize="inherit" />
           </IconButton>
+          {
+            <Modal
+              onClose={() => setResumeModalOpen(false)}
+              open={resumeModalOpen}
+            >
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 500,
+                  bgcolor: "background.paper", // Change to whatever color you want
+                  border: "2px solid #9f9f9f",
+                  borderRadius: "8px",
+                  boxShadow: 24,
+                  p: 4,
+                }}
+              >
+                <p className="job__modal__heading">Confirm Resume</p>
+                <FileUpload
+                  resumeFilename="Dummy Filename.pdf"
+                  handleDownloadResume={() => {}}
+                  handleResumeChange={() => {}}
+                />
+              </Box>
+            </Modal>
+          }
           <IconButton
             title="Go To Job"
             size="large"

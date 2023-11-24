@@ -11,6 +11,10 @@
     display: flex;
     gap: 20px;
     align-items: center;
+
+    &__avatar {
+      cursor: pointer;
+    }
   }
 
   &__searchbar {
@@ -59,8 +63,10 @@
 
       &__item {
         color: rgb(81, 81, 81);
+        font-weight: 600;
+        letter-spacing: 0.3px;
         &:hover {
-          color: black;
+          color: #0288d1;
           cursor: pointer;
         }
 

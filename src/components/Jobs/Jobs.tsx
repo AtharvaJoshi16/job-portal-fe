@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Job } from "..";
 import "./Jobs.scss";
 import { JobProps } from "../Job/Job.model";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   filterJobs,
   getJobs,
@@ -42,7 +43,12 @@ const Jobs = ({ bookmark }: JobsProps) => {
       }
     })();
   }, [state, bookmark]);
-  return (
+  return !jobs ? (
+    <CircularProgress
+      style={{ width: "60px", height: "60px" }}
+      className="app__circular-progress"
+    />
+  ) : (
     <div className="jobs">
       <div className="jobs__grid-view">
         {jobs?.map((job) => (

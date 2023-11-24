@@ -19,14 +19,25 @@
   p {
     margin: 0;
   }
+
+  &__modal {
+    &__heading {
+      font-weight: 700;
+      font-size: large;
+      color: rgb(86, 86, 86);
+      margin: 0 0 20px 0;
+    }
+  }
+
   &__logo-role-wrapper {
     display: flex;
     gap: 30px;
     align-items: center;
     margin: 10px 30px;
     &__logo {
-      width: 80px;
-      height: 80px;
+      width: auto;
+      max-width: 100px;
+      max-height: 80px;
     }
 
     &__role {

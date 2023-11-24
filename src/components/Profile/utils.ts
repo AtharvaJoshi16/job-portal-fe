@@ -46,3 +46,23 @@ export const getProfileImage = async () => {
     };
   }
 };
+
+export const saveResume = async (formdata: FormData) => {
+  const response = await axios.post(
+    `http://localhost:8080/api/v1/upload-resume?userId=${id}`,
+    formdata,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};
+
+export const getResumeFileName = async () => {
+  const response = await axios.get(
+    `http://localhost:8080/api/v1/get-resume?userId=${id}`
+  );
+  return response.data;
+};

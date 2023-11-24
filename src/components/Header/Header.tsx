@@ -90,7 +90,11 @@ const Header = () => {
         </div>
       </div>
       <div className="header__right-section">
-        <div title="" onClick={() => navigate(`/profile/${id}`)}>
+        <div
+          className="header__right-section__avatar"
+          title=""
+          onClick={() => navigate(`/profile/${id}`)}
+        >
           <Avatar alt="user-profile-pic" src={profileImage} />
         </div>
         <Button onClick={() => {}} variant="contained" color="primary">

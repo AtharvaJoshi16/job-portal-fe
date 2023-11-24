@@ -15,6 +15,7 @@ import Login from "./components/Login";
 import { onResetPassword } from "./components/ResetPassword/utils";
 import { onEdit } from "./components/Profile/utils";
 import JobDetail from "./components/JobDetail/JobDetail";
+import "./App.scss";
 
 export default function App() {
   return (

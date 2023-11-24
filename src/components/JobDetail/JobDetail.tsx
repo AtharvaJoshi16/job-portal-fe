@@ -6,16 +6,20 @@ import { getJobByID, returnDateDifference } from "./utils";
 import "./JobDetail.scss";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import PsychologyIcon from "@mui/icons-material/Psychology";
-import NearMeIcon from "@mui/icons-material/NearMe";
+import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded";
 import StarsIcon from "@mui/icons-material/Stars";
 import RoomIcon from "@mui/icons-material/Room";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedRoundedIcon from "@mui/icons-material/BookmarkAddedRounded";
-import { Divider, Button } from "@mui/material";
+import { Divider, Button, CircularProgress } from "@mui/material";
+import { getSavedJobs, removedSavedJob, saveJob } from "../Jobs/utils";
 const JobDetail = ({ jobData }: JobDetailProps) => {
   const [job, setJob] = useState<JobProps>();
   const { id } = useParams();
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState<boolean | undefined>();
+  const [applied, setApplied] = useState(false);
+  console.log(saved);
   const dateDifference = job?.datePosted
     ? returnDateDifference(job?.datePosted)
     : "NA";
@@ -27,13 +31,40 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
         const response = await getJobByID(id);
         setJob(response?.jobs);
       }
+      const response = await getSavedJobs();
+      if (response?.jobs?.savedJobs?.includes(id)) {
+        setSaved(true);
+      } else {
+        setSaved(false);
+      }
     })();
   }, [jobData, id]);
 
-  const handleSave = () => {
-    setSaved(!saved);
+  const handleSave = async () => {
+    const args = id ? id : jobData?._id ? jobData?._id : "";
+
+    if (!saved) {
+      const response = await saveJob(args);
+      if (response?.code === 200) {
+        setSaved(true);
+      }
+    } else {
+      const response = await removedSavedJob(args);
+      if (response?.code === 200) {
+        setSaved(false);
+      }
+    }
   };
-  return (
+
+  const handleApply = () => {
+    setApplied(true);
+  };
+  return !job ? (
+    <CircularProgress
+      style={{ width: "60px", height: "60px" }}
+      className="app__circular-progress"
+    />
+  ) : (
     <div className="job-detail">
       <div className="job-detail__header-section">
         <img
@@ -171,18 +202,39 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
       </div>
 
       <div className="job-detail__actions">
-        <Button
-          variant="contained"
-          endIcon={<NearMeIcon />}
-          sx={{ fontWeight: "600", borderRadius: "50px" }}
-        >
-          APPLY
-        </Button>
-        {saved ? (
+        {applied ? (
+          <Button
+            disabled={applied}
+            variant="contained"
+            onClick={handleApply}
+            endIcon={<DoneAllRoundedIcon color="success" />}
+            sx={{
+              fontWeight: "600",
+              borderRadius: "50px",
+              "&:disabled": {
+                backgroundColor: "#c8e4fb",
+              },
+            }}
+          >
+            APPLIED
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={handleApply}
+            endIcon={<AssignmentTurnedInRoundedIcon />}
+            sx={{ fontWeight: "600", borderRadius: "50px" }}
+          >
+            APPLY
+          </Button>
+        )}
+        {saved === undefined ? (
+          <CircularProgress style={{ width: "20px", height: "20px" }} />
+        ) : saved ? (
           <Button
             onClick={handleSave}
             variant="contained"
-            endIcon={<BookmarkAddedRoundedIcon />}
+            endIcon={<BookmarkAddedRoundedIcon color="action" />}
             sx={{ fontWeight: "600", borderRadius: "50px" }}
           >
             SAVED
