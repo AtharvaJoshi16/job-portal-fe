@@ -4,8 +4,6 @@ import {
   TrackStatusProps,
 } from "./TrackStatus.model";
 import "./TrackStatus.scss";
-import CancelRoundedIcon from "@mui/icons-material/CancelRounded";
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import classNames from "classnames";
 
 import { Stepper, Step, StepLabel, StepConnector } from "@mui/material";

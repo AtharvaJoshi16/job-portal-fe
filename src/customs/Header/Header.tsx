@@ -14,6 +14,7 @@ import {
   ButtonGroup,
   Button as DropdownButton2,
 } from "react-bootstrap";
+import { ModeToggle } from "@/components/mode-toggle";
 const Header = () => {
   const navigate = useNavigate();
   const { id } = JSON.parse(localStorage.user);
@@ -130,6 +131,7 @@ const Header = () => {
         </div>
       </div>
       <div className="header__right-section">
+        <ModeToggle />
         <div
           className="header__right-section__avatar"
           title=""

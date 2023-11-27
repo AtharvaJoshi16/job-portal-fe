@@ -5,7 +5,6 @@
   border: 1px solid gray;
   border-radius: 8px;
   font-family: var(--rubik-regular);
-  background-color: white;
   width: fit-content;
 
   @include breakpoint("sm") {
@@ -17,7 +16,7 @@
   }
 
   &__header {
-    background: white;
+    background-color: inherit;
     width: fit-content;
     padding: 3px 8px;
     margin: -15px auto auto;

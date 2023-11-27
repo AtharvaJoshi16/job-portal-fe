@@ -4,7 +4,6 @@
   border: 1px solid gray;
   border-radius: 8px;
   font-family: var(--rubik-regular);
-  background-color: white;
   width: fit-content;
   @include breakpoint("sm") {
     width: 320px;
@@ -15,7 +14,6 @@
   }
 
   &__header {
-    background: white;
     width: fit-content;
     padding: 3px 8px;
     margin: -15px auto auto;
@@ -36,11 +34,11 @@
 
   &__create-account {
     display: flex;
+    font-size: 14px;
     justify-content: center;
     align-items: center;
     letter-spacing: 0.3px;
     &__link {
-      color: #0645ad;
       letter-spacing: 0.3px;
       cursor: pointer;
     }
@@ -52,7 +50,6 @@
     }
     display: flex;
     justify-content: center;
-    color: #0645ad;
     cursor: pointer;
     letter-spacing: 0.3px;
   }
