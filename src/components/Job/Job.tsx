@@ -25,6 +25,7 @@ import { returnDateDifference } from "../JobDetail/utils";
 import FileUpload from "../FileUpload/FileUpload";
 import { getResumeFileName, saveResume } from "../Profile/utils";
 import { applyJob } from "../../apis/applyJob";
+// import { Comments } from "..";
 
 const Job = ({
   _id,
@@ -203,11 +204,6 @@ const Job = ({
             </p>
           </div>
         </div>
-        {/* {description?.about && (
-          <div className="job__upper__about">
-            <p className="job__upper__about__text">{description?.about}</p>
-          </div>
-        )} */}
         <div className="job__upper__chips">
           {skills?.map((skill) => (
             <Chip
@@ -260,10 +256,10 @@ const Job = ({
               )}
             </IconButton>
             {/* {showComments && (
-            <div className="job__lower__actions__comments">
-              <Comments comments={comments} />
-            </div>
-          )} */}
+              <div className="job__lower__actions__comments">
+                <Comments comments={comments} />
+              </div>
+            )} */}
             <IconButton size="small" onClick={handleBookmark}>
               {bookmarked ? (
                 <BookmarkRoundedIcon fontSize="small" />
