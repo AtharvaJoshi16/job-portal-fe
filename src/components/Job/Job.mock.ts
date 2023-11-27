@@ -45,4 +45,5 @@ export const jobMockData: JobProps = {
   recruiter_id: "c4d51491-658b-4600-8dc2-5d094f429f10",
   skills: ["React", "Node.js", "Python"],
   workingMode: "Hybrid",
+  appliedJobs: [],
 };

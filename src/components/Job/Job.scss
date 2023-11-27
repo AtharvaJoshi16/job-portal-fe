@@ -1,23 +1,29 @@
-@import "../commons/breakpoints.scss";
+@import "../commons/index.scss";
 
 .job {
   padding: 8px;
-  width: 340px;
-  height: 405px;
-  box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+  width: 100%;
+  min-width: 300px;
+  height: auto;
+  font-family: var(--rubik-regular);
   border-radius: 8px;
-  border: 2px solid rgb(225, 225, 225);
+  border: 1.5px solid rgb(225, 225, 225);
   position: relative;
-
-  @include breakpoint("md") {
-    width: 350px;
-  }
-
-  @include breakpoint("lg") {
-    width: 380px;
-  }
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   p {
     margin: 0;
+  }
+
+  &:hover {
+    transform: scale(1.025);
+    transition: transform 0.2s ease-in-out;
+    box-shadow: rgba(0, 0, 0, 0.18) 0px 2px 4px;
+  }
+
+  @include breakpoint("md") {
+    width: 320px;
   }
 
   &__modal {
@@ -27,109 +33,131 @@
       color: rgb(86, 86, 86);
       margin: 0 0 20px 0;
     }
+
+    &__apply {
+      float: right;
+      top: 15px;
+      right: 10px;
+      bottom: 10px;
+      font-weight: bold;
+    }
   }
 
-  &__logo-role-wrapper {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    margin: 10px 30px;
-    &__logo {
-      width: auto;
-      max-width: 100px;
-      max-height: 80px;
+  &__upper {
+    &__logo-role-wrapper {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      margin: 10px 30px;
+      &__logo {
+        width: auto;
+        max-width: 100px;
+        max-height: 80px;
+      }
+
+      &__role {
+        display: flex;
+        flex-direction: column;
+
+        &__text {
+          font-family: var(--rubik-bold);
+          font-size: large;
+          letter-spacing: 0.2px;
+          line-height: 24px;
+          color: rgb(26, 26, 50);
+        }
+
+        &__org-text {
+          font-size: small;
+          color: rgb(126, 126, 126);
+          font-weight: 500;
+          letter-spacing: 0.3px;
+        }
+      }
     }
 
-    &__role {
+    &__chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 10px auto;
+      padding: 10px;
+    }
+
+    &__job-details {
       display: flex;
       flex-direction: column;
+      gap: 3px;
+      margin: 20px 15px 0 15px;
 
-      &__text {
-        font-weight: bold;
-        font-size: large;
-        letter-spacing: 0.2px;
-        line-height: 24px;
+      &__locations {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        &__wrapper {
+          line-height: 18px;
+        }
+
+        &__text {
+          font-size: small;
+          font-weight: 500;
+          letter-spacing: 0.5px;
+          color: rgb(126, 126, 126);
+        }
       }
+    }
 
-      &__org-text {
+    &__about {
+      margin: 10px 20px;
+      &__text {
+        display: -webkit-box;
+        text-align: justify;
+        letter-spacing: 0.2px;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        text-overflow: ellipsis;
         font-size: small;
         color: rgb(126, 126, 126);
-        font-weight: 500;
-        letter-spacing: 0.3px;
       }
     }
   }
 
-  &__about {
-    margin: 10px 20px;
-
-    &__text {
-      display: -webkit-box;
-      text-align: justify;
-      letter-spacing: 0.2px;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: small;
-      color: rgb(126, 126, 126);
-    }
-  }
-
-  &__date-posted {
-    margin: 5px 0 0 3px;
-    &__text {
-      font-size: x-small;
-      color: rgb(126, 126, 126);
-      letter-spacing: 0.3px;
-      font-weight: 600;
-    }
-  }
-
-  &__job-details {
+  &__lower {
     display: flex;
     flex-direction: column;
-    gap: 3px;
-    margin: 20px 15px 0 15px;
-
-    &__locations {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-
-      &__wrapper {
-        line-height: 18px;
-      }
-
+    gap: 15px;
+    margin-top: 10px;
+    &__date-posted {
+      margin: 5px 0 0 15px;
       &__text {
-        font-size: small;
-        font-weight: 500;
-        letter-spacing: 0.5px;
+        padding-left: 5px;
+        font-size: x-small;
         color: rgb(126, 126, 126);
+        letter-spacing: 0.3px;
+        font-weight: 600;
       }
     }
-  }
 
-  &__actions {
-    display: flex;
-    margin: 0 15px;
-    justify-content: space-between;
-    align-items: center;
-    position: absolute;
-    bottom: 4px;
-    width: 85%;
-    &__left {
+    &__actions {
       display: flex;
-      gap: 8px;
-    }
+      margin: 0 15px;
+      justify-content: space-between;
+      align-items: center;
+      &__left {
+        display: flex;
+        gap: 8px;
+      }
 
-    &__right {
-      display: flex;
-      gap: 5px;
-    }
+      &__right {
+        display: flex;
+        gap: 5px;
+      }
 
-    &__comments {
-      position: absolute;
+      &__comments {
+        position: absolute;
+      }
     }
   }
 }

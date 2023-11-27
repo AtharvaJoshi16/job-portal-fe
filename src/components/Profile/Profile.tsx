@@ -363,23 +363,21 @@ const Profile = ({ onEdit }: ProfileProps) => {
               className="profile__form__image-section__input"
             />
           </div>
-          <div className="profile__form__resume-wrapper">
-            <Form.Label className="profile__form__resume-wrapper__label">
-              Resume
-            </Form.Label>
-            <div className="profile__form__resume-wrapper__resume">
+          {resumeFilename ? (
+            <div className="profile__form__resume-wrapper">
               <FileUpload
+                headingLabel="Resume"
+                warningText={resumeWarning}
                 resumeFilename={resumeFilename}
                 handleResumeChange={handleResumeChange}
                 handleDownloadResume={handleDownloadResume}
               />
             </div>
-            {resumeWarning && (
-              <p className="profile__form__resume-wrapper__warning">
-                {resumeWarning}
-              </p>
-            )}
-          </div>
+          ) : (
+            <CircularProgress
+              sx={{ width: "40px", height: "40px", margin: "auto" }}
+            />
+          )}
           <Form.Group className="profile__form__group">
             <Form.Label className="profile__form__group__label">
               Gender

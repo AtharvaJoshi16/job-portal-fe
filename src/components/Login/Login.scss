@@ -1,8 +1,9 @@
-@import "../commons/breakpoints.scss";
+@import "../commons/index.scss";
 .login {
   margin: 60px auto;
   border: 1px solid gray;
   border-radius: 8px;
+  font-family: var(--rubik-regular);
   background-color: white;
   width: fit-content;
   @include breakpoint("sm") {
@@ -37,8 +38,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    letter-spacing: 0.3px;
     &__link {
       color: #0645ad;
+      letter-spacing: 0.3px;
       cursor: pointer;
     }
   }
@@ -51,6 +54,7 @@
     justify-content: center;
     color: #0645ad;
     cursor: pointer;
+    letter-spacing: 0.3px;
   }
 
   &__google-login {

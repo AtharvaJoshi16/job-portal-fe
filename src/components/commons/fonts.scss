@@ -1,0 +1,166 @@
+@font-face {
+  font-family: "Roboto-Regular";
+  src: local("Roboto-Regular"),
+    url("../../assets/fonts/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Medium";
+  src: local("Roboto-Medium"),
+    url("../../assets/fonts/Roboto-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Light";
+  src: local("Roboto-Light"),
+    url("../../assets/fonts/Roboto-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Bold";
+  src: local("Roboto-Bold"),
+    url("../../assets/fonts/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-BlackItalic";
+  src: local("Roboto-BlackItalic"),
+    url("../../assets/fonts/Roboto-BlackItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Italic";
+  src: local("Roboto-Italic"),
+    url("../../assets/fonts/Roboto-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-BoldItalic";
+  src: local("Roboto-BoldItalic"),
+    url("../../assets/fonts/Roboto-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Black";
+  src: local("Roboto-Black"),
+    url("../../assets/fonts/Roboto-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-LightItalic";
+  src: local("Roboto-LightItalic"),
+    url("../../assets/fonts/Roboto-LightItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-MediumItalic";
+  src: local("Roboto-MediumItalic"),
+    url("../../assets/fonts/Roboto-MediumItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-ThinItalic";
+  src: local("Roboto-ThinItalic"),
+    url("../../assets/fonts/Roboto-ThinItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto-Thin";
+  src: local("Roboto-Thin"),
+    url("../../assets/fonts/Roboto-Thin.ttf") format("truetype");
+}
+
+// ----
+@font-face {
+  font-family: "Rubik-Regular";
+  src: local("Rubik-Regular"),
+    url("../../assets/fonts/Rubik-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-Medium";
+  src: local("Rubik-Medium"),
+    url("../../assets/fonts/Rubik-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-Light";
+  src: local("Rubik-Light"),
+    url("../../assets/fonts/Rubik-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-Bold";
+  src: local("Rubik-Bold"),
+    url("../../assets/fonts/Rubik-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-BlackItalic";
+  src: local("Rubik-BlackItalic"),
+    url("../../assets/fonts/Rubik-BlackItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-Italic";
+  src: local("Rubik-Italic"),
+    url("../../assets/fonts/Rubik-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-BoldItalic";
+  src: local("Rubik-BoldItalic"),
+    url("../../assets/fonts/Rubik-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-Black";
+  src: local("Rubik-Black"),
+    url("../../assets/fonts/Rubik-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-LightItalic";
+  src: local("Rubik-LightItalic"),
+    url("../../assets/fonts/Rubik-LightItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Rubik-MediumItalic";
+  src: local("Rubik-MediumItalic"),
+    url("../../assets/fonts/Rubik-MediumItalic.ttf") format("truetype");
+}
+//
+
+:root {
+  --roboto-light: "Roboto-Light";
+  --roboto-regular: "Roboto-Regular";
+  --roboto-medium: "Roboto-Medium";
+  --roboto-bold: "Roboto-Bold";
+  --roboto-semibold: "Roboto-SemiBold";
+  --roboto-extrabold: "Roboto-ExtraBold";
+  --roboto-italic: "Roboto-Italic";
+  --roboto-light-italic: "Roboto-LightItalic";
+  --roboto-medium-italic: "Roboto-MediumItalic";
+  --roboto-bold-italic: "Roboto-BoldItalic";
+  --roboto-thin: "Roboto-Thin";
+  --roboto-thin-italic: "Roboto-ThinItalic";
+  --roboto-black: "Roboto-Black";
+  --roboto-black-italic: "Roboto-BlackItalic";
+  // ____
+
+  --rubik-light: "Rubik-Light";
+  --rubik-regular: "Rubik-Regular";
+  --rubik-medium: "Rubik-Medium";
+  --rubik-bold: "Rubik-Bold";
+  --rubik-semibold: "Rubik-SemiBold";
+  --rubik-extrabold: "Rubik-ExtraBold";
+  --rubik-italic: "Rubik-Italic";
+  --rubik-light-italic: "Rubik-LightItalic";
+  --rubik-medium-italic: "Rubik-MediumItalic";
+  --rubik-bold-italic: "Rubik-BoldItalic";
+  --rubik-thin: "Rubik-Thin";
+  --rubik-thin-italic: "Rubik-ThinItalic";
+  --rubik-black: "Rubik-Black";
+  --rubik-black-italic: "Rubik-BlackItalic";
+}

@@ -14,31 +14,45 @@ import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedRoundedIcon from "@mui/icons-material/BookmarkAddedRounded";
 import { Divider, Button, CircularProgress } from "@mui/material";
 import { getSavedJobs, removedSavedJob, saveJob } from "../Jobs/utils";
+import { applyJob, getAppliedJobs } from "../../apis/applyJob";
+import TrackStatus from "../TrackStatus/TrackStatus";
 const JobDetail = ({ jobData }: JobDetailProps) => {
   const [job, setJob] = useState<JobProps>();
   const { id } = useParams();
   const [saved, setSaved] = useState<boolean | undefined>();
-  const [applied, setApplied] = useState(false);
-  console.log(saved);
+  const [applied, setApplied] = useState<boolean | undefined>();
+  const [appliedStatus, setJobStatus] = useState("");
+  const [appliedDate, setAppliedDate] = useState("");
   const dateDifference = job?.datePosted
     ? returnDateDifference(job?.datePosted)
     : "NA";
   useEffect(() => {
-    (async () => {
-      if (jobData) {
-        setJob(jobData);
-      } else if (id) {
-        const response = await getJobByID(id);
-        setJob(response?.jobs);
-      }
-      const response = await getSavedJobs();
-      if (response?.jobs?.savedJobs?.includes(id)) {
+    if (jobData) {
+      setJob(jobData);
+    } else if (id) {
+      getJobByID(id).then((resp) => setJob(resp?.jobs));
+    }
+    getSavedJobs().then((resp) => {
+      if (resp?.jobs?.savedJobs?.includes(id)) {
         setSaved(true);
       } else {
         setSaved(false);
       }
-    })();
-  }, [jobData, id]);
+    });
+
+    getAppliedJobs().then((resp) => {
+      const found = resp?.result?.find((j) => {
+        return j._id === job?._id;
+      });
+      if (found) {
+        setApplied(true);
+        setJobStatus(found?.applicationStatus);
+        setAppliedDate(found?.appliedDate);
+      } else {
+        setApplied(false);
+      }
+    });
+  }, [id, job?._id, jobData]);
 
   const handleSave = async () => {
     const args = id ? id : jobData?._id ? jobData?._id : "";
@@ -56,8 +70,13 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
     }
   };
 
-  const handleApply = () => {
-    setApplied(true);
+  const handleApply = async () => {
+    if (job?._id) {
+      const response = await applyJob(job._id);
+      if (response?.code === 200) {
+        setApplied(true);
+      }
+    }
   };
   return !job ? (
     <CircularProgress
@@ -202,7 +221,9 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
       </div>
 
       <div className="job-detail__actions">
-        {applied ? (
+        {applied === undefined ? (
+          <CircularProgress style={{ width: "20px", height: "20px" }} />
+        ) : applied ? (
           <Button
             disabled={applied}
             variant="contained"
@@ -223,7 +244,10 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
             variant="contained"
             onClick={handleApply}
             endIcon={<AssignmentTurnedInRoundedIcon />}
-            sx={{ fontWeight: "600", borderRadius: "50px" }}
+            sx={{
+              fontWeight: "600",
+              borderRadius: "50px",
+            }}
           >
             APPLY
           </Button>
@@ -249,7 +273,18 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
             SAVE
           </Button>
         )}
+        {applied && (
+          <p className="job-detail__actions__appliedDate">
+            Applied {returnDateDifference(appliedDate)}
+          </p>
+        )}
       </div>
+
+      {appliedStatus && (
+        <div className="job-detail__status">
+          <TrackStatus status={appliedStatus} />
+        </div>
+      )}
 
       <div className="job-detail__description">
         <p className="job-detail__description__heading">Job Description</p>

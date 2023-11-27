@@ -1,0 +1,51 @@
+@import "../commons/index.scss";
+.track-status {
+  width: fit-content;
+  margin: auto;
+  padding: 30px;
+  border: 1.5px solid rgb(214, 214, 214);
+  border-radius: 10px;
+  background: rgb(239, 239, 239);
+  .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active {
+    color: #ffc107;
+  }
+
+  .css-1hv8oq8-MuiStepLabel-label {
+    font-family: var(--rubik-regular);
+  }
+
+  &--vertical {
+    .css-11r6j1z-MuiStepper-root {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .css-1eqj81r-MuiStep-root {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .css-ff5l4u-MuiStepConnector-root {
+      margin-left: 0;
+      position: relative;
+      top: 0;
+      left: 0;
+      right: 0;
+    }
+
+    .css-1hv8oq8-MuiStepLabel-label.MuiStepLabel-alternativeLabel {
+      margin-top: 10px;
+    }
+  }
+
+  &__step-label {
+    text-transform: capitalize;
+    &--success {
+      .css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
+        color: #6fbf73;
+      }
+    }
+  }
+}

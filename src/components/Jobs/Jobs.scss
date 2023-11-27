@@ -1,8 +1,25 @@
+@import "../commons/breakpoints.scss";
+
 .jobs {
-  margin: 30px;
-  &__grid-view {
+  &__grid {
+    margin: auto;
     display: flex;
-    gap: 30px;
     flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    @include breakpoint("md") {
+      gap: 40px;
+    }
+    padding: 30px;
+  }
+
+  &__search-results {
+    font-family: var(--rubik-bold);
+    font-size: 26px;
+    margin: 20px 30px;
+
+    .jobs__grid {
+      padding: 0 30px;
+    }
   }
 }

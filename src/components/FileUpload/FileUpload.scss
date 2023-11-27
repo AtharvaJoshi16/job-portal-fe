@@ -1,0 +1,68 @@
+.file-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-family: var(--rubik-regular);
+
+  p {
+    margin: 0;
+  }
+  &__heading {
+    color: rgb(86, 86, 86);
+    font-family: var(--rubik-bold);
+    margin-left: 40px;
+    margin-top: 20px;
+  }
+
+  &__uploaded {
+    margin-left: 40px;
+    margin-top: 3px;
+    font-weight: 500;
+    color: rgb(1, 126, 87);
+  }
+
+  &__resume {
+    margin: auto;
+    padding: 15px;
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    &__input {
+      display: none;
+    }
+
+    &__filename {
+      font-weight: 500;
+      color: rgb(86, 86, 86);
+      letter-spacing: 0.3px;
+      display: flex;
+      max-height: 50px;
+      &__text {
+        max-width: 130px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    &__actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    &__label {
+      font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    }
+  }
+
+  &__warning {
+    margin-left: 40px;
+    margin-top: 3px;
+    font-weight: 500;
+    color: rgb(193, 0, 0);
+  }
+}

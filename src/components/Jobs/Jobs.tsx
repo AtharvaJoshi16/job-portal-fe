@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Job } from "..";
 import "./Jobs.scss";
-import { JobProps } from "../Job/Job.model";
+import { AppliedJobs, JobProps } from "../Job/Job.model";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   filterJobs,
@@ -12,37 +12,46 @@ import {
 } from "./utils";
 import { useLocation } from "react-router";
 import { JobsProps } from "./Jobs.model";
+import { getAppliedJobs } from "../../apis/applyJob";
+import { searchJob } from "../../apis/searchJob";
 
-const Jobs = ({ bookmark }: JobsProps) => {
+const Jobs = ({ bookmark, applies }: JobsProps) => {
   const [jobs, setJobs] = useState<JobProps[]>();
   const [bookmarks, setBookmarks] = useState<string[]>([]);
+  const [appliedJobs, setAppliedJobs] = useState<AppliedJobs[] | undefined>();
   const { state } = useLocation();
-  useEffect(() => {
-    (async () => {
-      let response;
-      if (bookmark) {
-        response = await getSavedJobs(true);
-        setJobs(response?.jobs?.savedJobs);
-        setBookmarks(response?.ids);
+
+  const setData = useCallback(() => {
+    if (state?.searchText) {
+      searchJob(state?.searchText).then((resp) => {
+        setJobs(resp?.results);
+      });
+    }
+    if (bookmark) {
+      getSavedJobs(true).then((resp) => {
+        setJobs(resp?.jobs?.savedJobs);
+        setBookmarks(resp?.ids);
+      });
+    } else {
+      getSavedJobs().then((resp) => setBookmarks(resp?.jobs?.savedJobs));
+    }
+    getAppliedJobs().then((resp) => setAppliedJobs(resp?.result));
+  }, [bookmark, state]);
+
+  const checkBookmark = useCallback(() => {
+    if (!bookmark) {
+      if (state?.filter) {
+        filterJobs(state?.filter).then((resp) => setJobs(resp?.jobs));
       } else {
-        response = await getSavedJobs();
-        setBookmarks(response?.jobs?.savedJobs);
+        getJobs().then((resp) => setJobs(resp?.jobs));
       }
-    })();
-  }, [bookmark]);
+    }
+  }, [state?.filter, bookmark]);
   useEffect(() => {
-    (async () => {
-      if (!bookmark) {
-        if (state?.filter) {
-          const response = await filterJobs(state?.filter);
-          setJobs(response?.jobs);
-        } else {
-          const response = await getJobs();
-          setJobs(response?.jobs);
-        }
-      }
-    })();
-  }, [state, bookmark]);
+    setData();
+    checkBookmark();
+  }, [setData, checkBookmark]);
+
   return !jobs ? (
     <CircularProgress
       style={{ width: "60px", height: "60px" }}
@@ -50,13 +59,20 @@ const Jobs = ({ bookmark }: JobsProps) => {
     />
   ) : (
     <div className="jobs">
-      <div className="jobs__grid-view">
+      {state?.searchText && (
+        <p className="jobs__search-results">
+          {jobs?.length} results for {`"${state?.searchText}"`}
+        </p>
+      )}
+      <div className="jobs__grid">
         {jobs?.map((job) => (
           <Job
+            variant={applies ? "apply" : "default"}
             {...job}
             onSaveJob={saveJob}
             onRemoveSavedJob={removedSavedJob}
             bookmarks={bookmarks}
+            appliedJobs={appliedJobs}
           />
         ))}
       </div>

@@ -16,12 +16,22 @@ import { onResetPassword } from "./components/ResetPassword/utils";
 import { onEdit } from "./components/Profile/utils";
 import JobDetail from "./components/JobDetail/JobDetail";
 import "./App.scss";
+import TrackStatus from "./components/TrackStatus/TrackStatus";
+import { TrackerMockData } from "./components/TrackStatus/TrackStatus.mock";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <TrackStatus
+              status={TrackerMockData.status}
+              appliedDate={TrackerMockData.appliedDate}
+            />
+          }
+        />
         <Route
           path="/register"
           element={<Register onVerify={onVerify} onSubmit={onSubmit} />}
@@ -60,6 +70,22 @@ export default function App() {
           element={
             <Layout>
               <Jobs bookmark />
+            </Layout>
+          }
+        />
+        <Route
+          path="/applies"
+          element={
+            <Layout>
+              <Jobs applies />
+            </Layout>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <Layout>
+              <Jobs />
             </Layout>
           }
         />

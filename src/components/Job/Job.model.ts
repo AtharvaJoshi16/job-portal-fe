@@ -1,6 +1,7 @@
 export interface JobProps {
   _id: string;
   jobRole: string;
+  variant?: "default" | "apply";
   experienceLevel: string;
   description?: Description;
   applicants: Array<string>;
@@ -14,9 +15,16 @@ export interface JobProps {
   skills: Array<string>;
   workingMode: string;
   recruiter_id: string;
-  onSaveJob: (job_id: string) => void;
-  onRemoveSavedJob: (job_id: string) => void;
-  bookmarks: string[];
+  onSaveJob?: (job_id: string) => void;
+  onRemoveSavedJob?: (job_id: string) => void;
+  bookmarks?: string[];
+  appliedJobs?: AppliedJobs[];
+}
+
+export interface AppliedJobs {
+  _id?: string;
+  appliedDate?: string;
+  applicationStatus?: string;
 }
 
 export interface Description {

@@ -1,9 +1,10 @@
-@import "../commons/breakpoints.scss";
+@import "../commons/index.scss";
 
 .register {
   margin: 60px auto;
   border: 1px solid gray;
   border-radius: 8px;
+  font-family: var(--rubik-regular);
   background-color: white;
   width: fit-content;
 
