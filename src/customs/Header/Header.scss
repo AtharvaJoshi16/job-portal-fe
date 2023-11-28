@@ -25,8 +25,13 @@
   &__searchbar {
     display: flex;
     align-items: center;
-    gap: 20px;
+    justify-content: space-between;
 
+    &__right {
+      display: flex;
+      width: 70%;
+      gap: 20px;
+    }
     .btn-check:checked + .btn,
     .btn.active,
     .btn.show,

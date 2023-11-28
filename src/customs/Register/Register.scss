@@ -16,7 +16,11 @@
   }
 
   &__header {
-    background-color: inherit;
+    background-color: white;
+
+    &--dark {
+      background-color: hsl(var(--background));
+    }
     width: fit-content;
     padding: 3px 8px;
     margin: -15px auto auto;

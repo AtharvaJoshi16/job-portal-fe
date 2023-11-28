@@ -10,10 +10,12 @@ import {
   VerifyApiResponse,
 } from "./Register.model";
 import { useNavigate } from "react-router";
+import { useTheme } from "@/components/theme-provider";
+import { register } from "module";
 
 const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
   const navigate = useNavigate();
-  console.log(localStorage.storageKey);
+  const { theme } = useTheme();
   const formik = useFormik({
     initialValues: {
       firstName: "",
@@ -60,7 +62,13 @@ const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
 
   return (
     <div className="register">
-      <div className="register__header">REGISTER</div>
+      <div
+        className={`register__header ${
+          theme === "dark" ? "register__header--dark" : ""
+        }`}
+      >
+        REGISTER
+      </div>
       <div className="register__form-wrapper">
         <Form
           className="register__form-wrapper__form"

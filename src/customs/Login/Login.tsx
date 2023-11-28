@@ -7,8 +7,11 @@ import { CredentialResponse, LoginPageProps } from "./Login.model";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { Input } from "@/components/ui/input";
+import { useTheme } from "@/components/theme-provider";
+import { dark } from "@mui/material/styles/createPalette";
 const Login = ({ onLogin }: LoginPageProps) => {
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -46,7 +49,13 @@ const Login = ({ onLogin }: LoginPageProps) => {
 
   return (
     <div className="login">
-      <div className="login__header">LOGIN</div>
+      <div
+        className={`login__header ${
+          theme === "dark" ? "login__header--dark" : ""
+        }`}
+      >
+        LOGIN
+      </div>
       <Form onSubmit={formik.handleSubmit} className="login__form">
         <Input
           type="text"

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router";
 import "./Header.scss";
-import { Avatar, Button, TextField } from "@mui/material";
+import { ChevronDown } from "lucide-react";
+import { Avatar, TextField } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
@@ -8,12 +10,17 @@ import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { useEffect, useState } from "react";
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
-  Dropdown,
-  ButtonGroup,
-  Button as DropdownButton2,
-} from "react-bootstrap";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { ModeToggle } from "@/components/mode-toggle";
 const Header = () => {
   const navigate = useNavigate();
@@ -87,47 +94,65 @@ const Header = () => {
           </li>
         </ul>
         <div className="header__searchbar">
-          <Dropdown
-            as={ButtonGroup}
-            id="dropdown-filter-button"
-            onSelect={(e) => handleFilterJob(e)}
-          >
-            <DropdownButton2
-              variant="primary"
-              onClick={() => {
-                navigate("/jobs", {
-                  state: {
-                    filter: "jobRole",
-                  },
-                });
-              }}
-            >
-              <TuneRoundedIcon color="inherit" />
-            </DropdownButton2>
-            <Dropdown.Toggle split variant="success" id="dropdown-filter" />
-            <Dropdown.Menu>
-              <Dropdown.Item eventKey="jobRole">Job Role</Dropdown.Item>
-              <Dropdown.Item eventKey="datePosted">Date Posted</Dropdown.Item>
-              <Dropdown.Item eventKey="experience">Experience</Dropdown.Item>
-              <Dropdown.Item eventKey="location">Location</Dropdown.Item>
-              <Dropdown.Item eventKey="skill">Skill</Dropdown.Item>
-              <Dropdown.Item eventKey="organization">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm">
+                <TuneRoundedIcon color="inherit" fontSize="small" />
+                <ChevronDown size={16} className="ml-1" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>Filter Options</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                accessKey="jobRole"
+                onSelect={(e) => handleFilterJob((e.target as any)?.accessKey)}
+              >
+                Job Role
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => handleFilterJob((e.target as any)?.accessKey)}
+                accessKey="datePosted"
+              >
+                Date Posted
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => handleFilterJob((e.target as any)?.accessKey)}
+                accessKey="experience"
+              >
+                Experience
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => handleFilterJob((e.target as any)?.accessKey)}
+                accessKey="location"
+              >
+                Location
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => handleFilterJob((e.target as any)?.accessKey)}
+                accessKey="skill"
+              >
+                Skill
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => handleFilterJob((e.target as any)?.accessKey)}
+                accessKey="organization"
+              >
                 Organization
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <TextField
-            sx={{ fontSize: "small" }}
-            size="small"
-            id="outlined-basic"
-            label="Search for job here..."
-            variant="outlined"
-            onKeyDown={(e) => handleSearch(e)}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
-          <Button variant="contained" onClick={handleSearchByButton}>
-            <SearchRoundedIcon color="inherit" />
-          </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div className="header__searchbar__right">
+            <Input
+              id="search-basic"
+              placeholder="Search for job here..."
+              onKeyDown={(e) => handleSearch(e)}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+            <Button variant="outline" onClick={handleSearchByButton}>
+              <SearchRoundedIcon color="inherit" />
+            </Button>
+          </div>
         </div>
       </div>
       <div className="header__right-section">
@@ -139,7 +164,7 @@ const Header = () => {
         >
           <Avatar alt="user-profile-pic" src={profileImage} />
         </div>
-        <Button onClick={() => {}} variant="contained" color="primary">
+        <Button onClick={() => {}} variant="destructive">
           <LogoutIcon color="inherit" />
         </Button>
       </div>
