@@ -46,4 +46,5 @@ export const jobMockData: JobProps = {
   skills: ["React", "Node.js", "Python"],
   workingMode: "Hybrid",
   appliedJobs: [],
+  openings: 30,
 };

@@ -20,6 +20,7 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<AppliedJobs[] | undefined>();
   const { state } = useLocation();
+  const appliedIds = appliedJobs?.map((job) => job._id);
 
   const setData = useCallback(() => {
     if (state?.searchText) {
@@ -35,9 +36,10 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
     } else {
       getSavedJobs().then((resp) => setBookmarks(resp?.jobs?.savedJobs));
     }
-    getAppliedJobs().then((resp) => setAppliedJobs(resp?.result));
+    getAppliedJobs().then((resp) => {
+      setAppliedJobs(resp?.result);
+    });
   }, [bookmark, state]);
-
   const checkBookmark = useCallback(() => {
     if (!bookmark) {
       if (state?.filter) {
@@ -47,6 +49,7 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
       }
     }
   }, [state?.filter, bookmark]);
+
   useEffect(() => {
     setData();
     checkBookmark();
@@ -65,16 +68,29 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
         </p>
       )}
       <div className="jobs__grid">
-        {jobs?.map((job) => (
-          <Job
-            variant={applies ? "apply" : "default"}
-            {...job}
-            onSaveJob={saveJob}
-            onRemoveSavedJob={removedSavedJob}
-            bookmarks={bookmarks}
-            appliedJobs={appliedJobs}
-          />
-        ))}
+        {jobs?.map((job) =>
+          applies ? (
+            appliedIds?.includes(job._id) && (
+              <Job
+                variant={applies ? "apply" : "default"}
+                {...job}
+                onSaveJob={saveJob}
+                onRemoveSavedJob={removedSavedJob}
+                bookmarks={bookmarks}
+                appliedJobs={appliedJobs}
+              />
+            )
+          ) : (
+            <Job
+              variant={applies ? "apply" : "default"}
+              {...job}
+              onSaveJob={saveJob}
+              onRemoveSavedJob={removedSavedJob}
+              bookmarks={bookmarks}
+              appliedJobs={appliedJobs}
+            />
+          )
+        )}
       </div>
     </div>
   );

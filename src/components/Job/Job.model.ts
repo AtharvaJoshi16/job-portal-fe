@@ -19,6 +19,7 @@ export interface JobProps {
   onRemoveSavedJob?: (job_id: string) => void;
   bookmarks?: string[];
   appliedJobs?: AppliedJobs[];
+  openings: number;
 }
 
 export interface AppliedJobs {

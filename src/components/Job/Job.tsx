@@ -30,6 +30,7 @@ import { applyJob } from "../../apis/applyJob";
 const Job = ({
   _id,
   jobRole,
+  openings,
   variant = "default",
   experienceLevel,
   skills,
@@ -49,7 +50,7 @@ const Job = ({
   const [bookmarked, setBookmark] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
-  const dateDiff = returnDateDifference(datePosted);
+  const dateDiff = datePosted ? returnDateDifference(datePosted) : null;
   const [warningText, setWarningText] = useState("");
   const [uploaded, setUploaded] = useState<boolean | undefined>();
   const [resumeFilename, setResumeFilename] = useState("");
@@ -220,7 +221,10 @@ const Job = ({
         <div className="job__lower__date-posted">
           {variant === "default" || !appliedJob ? (
             <>
-              <p className="job__lower__date-posted__text">{dateDiff}</p>
+              <p className=" job__lower__date-posted__text job__lower__date-posted__text__openings">
+                {openings} openings
+              </p>
+              <p className="job__lower__date-posted__text">Posted {dateDiff}</p>
               <p className="job__lower__date-posted__text">
                 Applicants: {applications}
               </p>
