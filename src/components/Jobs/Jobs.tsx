@@ -30,6 +30,7 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
     }
     if (bookmark) {
       getSavedJobs(true).then((resp) => {
+        console.log(resp);
         setJobs(resp?.jobs?.savedJobs);
         setBookmarks(resp?.ids);
       });
@@ -54,6 +55,7 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
     setData();
     checkBookmark();
   }, [setData, checkBookmark]);
+  console.log(jobs);
 
   return !jobs ? (
     <CircularProgress

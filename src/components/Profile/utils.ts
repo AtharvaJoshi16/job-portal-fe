@@ -1,7 +1,7 @@
 import axios from "axios";
 import { UserProfileData } from "./Profile.model";
 
-const { id, email } = JSON.parse(localStorage.user);
+const { _id: id, email } = JSON.parse(localStorage.user);
 
 export const onEdit = async (UserProfileData: UserProfileData) => {
   const response = await axios.post(

@@ -14,9 +14,11 @@ import {
   ButtonGroup,
   Button as DropdownButton2,
 } from "react-bootstrap";
+import { getFromStorage } from "@/utils/localStorage.utils";
 const Header = () => {
   const navigate = useNavigate();
-  const { id } = JSON.parse(localStorage.user);
+  const { _id: id, firstName, lastName } = getFromStorage("user");
+  console.log(getFromStorage("user"));
   const [searchText, setSearchText] = useState("");
   const [profileImage, setProfileImage] = useState("");
   useEffect(() => {
@@ -132,7 +134,7 @@ const Header = () => {
       <div className="header__right-section">
         <div
           className="header__right-section__avatar"
-          title=""
+          title={`${firstName} ${lastName}`}
           onClick={() => navigate(`/profile/${id}`)}
         >
           <Avatar alt="user-profile-pic" src={profileImage} />

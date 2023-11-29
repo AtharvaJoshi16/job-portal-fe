@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { id } = JSON.parse(localStorage.user);
+const { _id: id } = JSON.parse(localStorage.user);
 
 export const applyJob = async (jobId: string) => {
   const response = await axios.post(

@@ -33,6 +33,7 @@ import "react-image-crop/src/ReactCrop.scss";
 import ReactCrop, { Crop } from "react-image-crop";
 import { ProfileImageResponse } from "../types/ApiResponse";
 import FileUpload from "../FileUpload/FileUpload";
+import { addToStorage } from "@/utils/localStorage.utils";
 
 const Profile = ({ onEdit }: ProfileProps) => {
   const { id } = useParams();
@@ -116,7 +117,7 @@ const Profile = ({ onEdit }: ProfileProps) => {
         }
         const profileImageResponse = await getProfileImage();
         setImageResponse(profileImageResponse);
-        localStorage.setItem("userProfileImage", profileImageResponse.url);
+        addToStorage("userProfileImage", profileImageResponse.url);
         const userResume = await getResumeFileName();
         if (userResume?.filename) {
           setResumeFilename(userResume?.filename);

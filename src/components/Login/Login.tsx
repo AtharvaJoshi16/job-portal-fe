@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { CredentialResponse, LoginPageProps } from "./Login.model";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { addToStorage } from "@/utils/localStorage.utils";
 const Login = ({ onLogin }: LoginPageProps) => {
   const navigate = useNavigate();
   const formik = useFormik({
@@ -15,14 +16,10 @@ const Login = ({ onLogin }: LoginPageProps) => {
     onSubmit: async (values) => {
       const resp = await onLogin?.(values);
       if (resp?.token) {
-        const user = {
-          id: resp?.userId,
-          token: resp?.token,
-          email: values?.email,
-        };
-        localStorage.setItem("user", JSON.stringify(user));
+        addToStorage("user", resp?.user);
+        addToStorage("token", resp?.token);
         alert("Logged In");
-        navigate("/");
+        navigate("/jobs");
       } else {
         alert(resp?.message);
       }

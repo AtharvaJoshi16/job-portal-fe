@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const { id } = JSON.parse(localStorage.user);
+const { _id: id } = JSON.parse(localStorage.user);
 
 export const getJobs = async () => {
   const response = await axios.get("http://localhost:8081/jobs/v1/view-jobs");
