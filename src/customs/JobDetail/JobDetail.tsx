@@ -4,15 +4,19 @@ import { JobDetailProps } from "./JobDetail.model";
 import { useState, useEffect } from "react";
 import { getJobByID, returnDateDifference } from "./utils";
 import "./JobDetail.scss";
+import {
+  BookmarkCheck,
+  BookmarkPlus,
+  CheckCheck,
+  ExternalLink,
+  Loader2,
+} from "lucide-react";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import PsychologyIcon from "@mui/icons-material/Psychology";
-import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
-import AssignmentTurnedInRoundedIcon from "@mui/icons-material/AssignmentTurnedInRounded";
 import StarsIcon from "@mui/icons-material/Stars";
 import RoomIcon from "@mui/icons-material/Room";
-import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
-import BookmarkAddedRoundedIcon from "@mui/icons-material/BookmarkAddedRounded";
-import { Divider, Button, CircularProgress } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { Divider, CircularProgress } from "@mui/material";
 import { getSavedJobs, removedSavedJob, saveJob } from "../Jobs/utils";
 import { applyJob, getAppliedJobs } from "../../apis/applyJob";
 import TrackStatus from "../TrackStatus/TrackStatus";
@@ -222,55 +226,29 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
 
       <div className="job-detail__actions">
         {applied === undefined ? (
-          <CircularProgress style={{ width: "20px", height: "20px" }} />
+          <Button disabled>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          </Button>
         ) : applied ? (
-          <Button
-            disabled={applied}
-            variant="contained"
-            onClick={handleApply}
-            endIcon={<DoneAllRoundedIcon color="success" />}
-            sx={{
-              fontWeight: "600",
-              borderRadius: "50px",
-              "&:disabled": {
-                backgroundColor: "#c8e4fb",
-              },
-            }}
-          >
-            APPLIED
+          <Button variant="secondary" disabled={applied} onClick={handleApply}>
+            APPLIED <CheckCheck className="ml-2 h-5 w-5" />
           </Button>
         ) : (
-          <Button
-            variant="contained"
-            onClick={handleApply}
-            endIcon={<AssignmentTurnedInRoundedIcon />}
-            sx={{
-              fontWeight: "600",
-              borderRadius: "50px",
-            }}
-          >
-            APPLY
+          <Button onClick={handleApply}>
+            APPLY <ExternalLink className="ml-2 h-5 w-5" />
           </Button>
         )}
         {saved === undefined ? (
-          <CircularProgress style={{ width: "20px", height: "20px" }} />
+          <Button disabled>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          </Button>
         ) : saved ? (
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            endIcon={<BookmarkAddedRoundedIcon color="action" />}
-            sx={{ fontWeight: "600", borderRadius: "50px" }}
-          >
-            SAVED
+          <Button onClick={handleSave}>
+            SAVED <BookmarkCheck className="ml-2 h-5 w-5" />
           </Button>
         ) : (
-          <Button
-            onClick={handleSave}
-            variant="contained"
-            endIcon={<BookmarkAddIcon />}
-            sx={{ fontWeight: "600", borderRadius: "50px" }}
-          >
-            SAVE
+          <Button onClick={handleSave}>
+            SAVE <BookmarkPlus className="ml-2 h-5 w-5" />
           </Button>
         )}
         {applied && (

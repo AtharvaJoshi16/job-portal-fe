@@ -1,7 +1,9 @@
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import CloudUploadRoundedIcon from "@mui/icons-material/CloudUploadRounded";
-import { Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import "./FileUpload.scss";
+import { Download, UploadCloud } from "lucide-react";
 const FileUpload = ({
   headingLabel,
   resumeFilename,
@@ -27,18 +29,12 @@ const FileUpload = ({
           />
         )}
         <div className="file-upload__resume__actions">
-          <Button
-            variant="contained"
-            color="info"
-            sx={{
-              fontWeight: "600",
-            }}
-          >
+          <Button variant="outline">
             <label
               htmlFor="input-resume-file"
               className="file-upload__resume__label"
             >
-              <CloudUploadRoundedIcon color="inherit" />
+              <UploadCloud className="h-5 w-5" />
             </label>
           </Button>
           <input
@@ -53,12 +49,11 @@ const FileUpload = ({
           />
           {resumeFilename && (
             <Button
-              variant="outlined"
-              color="info"
+              variant="ghost"
               title="Download Resume"
               onClick={handleDownloadResume}
             >
-              <DownloadRoundedIcon color="inherit" />
+              <Download className="h-5 w-5" />
             </Button>
           )}
         </div>

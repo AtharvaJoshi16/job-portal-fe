@@ -9,16 +9,10 @@ import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
 import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
 import ModeCommentRoundedIcon from "@mui/icons-material/ModeCommentRounded";
 import NearMeRoundedIcon from "@mui/icons-material/NearMeRounded";
+import { Button } from "@/components/ui/button";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import "./Job.scss";
-import {
-  IconButton,
-  Modal,
-  Box,
-  Button,
-  CircularProgress,
-  Chip,
-} from "@mui/material";
+import { IconButton, Modal, Box, CircularProgress, Chip } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router";
 import { returnDateDifference } from "../JobDetail/utils";
@@ -296,7 +290,7 @@ const Job = ({
                     left: "50%",
                     transform: "translate(-50%, -50%)",
                     width: 500,
-                    bgcolor: "background.paper", // Change to whatever color you want
+                    bgcolor: "#dcdcdc", // Change to whatever color you want
                     border: "2px solid #9f9f9f",
                     borderRadius: "8px",
                     boxShadow: 24,
@@ -311,17 +305,29 @@ const Job = ({
                     handleDownloadResume={onDownloadResume}
                     handleResumeChange={(e) => onResumeChange(e)}
                   />
-                  <Button
-                    disabled={applied}
-                    variant="contained"
+                  <Box
                     sx={{
-                      fontWeight: 600,
+                      display: "flex",
+                      gap: "10px",
+                      justifyContent: "flex-end",
+                      marginTop: "10px",
                     }}
-                    className="job__modal__apply"
-                    onClick={handleApply}
                   >
-                    Apply
-                  </Button>
+                    <Button
+                      disabled={applied}
+                      variant="outline"
+                      onClick={handleApply}
+                    >
+                      Apply
+                    </Button>
+                    <Button
+                      disabled={applied}
+                      variant="destructive"
+                      onClick={() => setResumeModalOpen(false)}
+                    >
+                      Close
+                    </Button>
+                  </Box>
                 </Box>
               </Modal>
             }

@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router";
 import "./Header.scss";
 import { ChevronDown } from "lucide-react";
-import { Avatar, TextField } from "@mui/material";
+import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
@@ -162,7 +162,11 @@ const Header = () => {
           title=""
           onClick={() => navigate(`/profile/${id}`)}
         >
-          <Avatar alt="user-profile-pic" src={profileImage} />
+          <Avatar
+            className="header__right-section__avatar__comp"
+            alt="user-profile-pic"
+            src={profileImage}
+          />
         </div>
         <Button onClick={() => {}} variant="destructive">
           <LogoutIcon color="inherit" />
