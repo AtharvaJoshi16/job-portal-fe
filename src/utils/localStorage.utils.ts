@@ -7,3 +7,7 @@ export const addToStorage = (key: string, value) => {
 export const getFromStorage = (key: string) => {
   return JSON.parse(localStorage.getItem(key)!);
 };
+
+export const removeFromStorage = (key: string) => {
+  localStorage.removeItem(key);
+};

@@ -16,9 +16,12 @@ import { Divider, Button, CircularProgress } from "@mui/material";
 import { getSavedJobs, removedSavedJob, saveJob } from "../Jobs/utils";
 import { applyJob, getAppliedJobs } from "../../apis/applyJob";
 import TrackStatus from "../TrackStatus/TrackStatus";
+import { getFromStorage } from "@/utils/localStorage.utils";
 const JobDetail = ({ jobData }: JobDetailProps) => {
   const [job, setJob] = useState<JobProps>();
   const { id } = useParams();
+  const user = getFromStorage("user");
+  const userId = user?._id;
   const [saved, setSaved] = useState<boolean | undefined>();
   const [applied, setApplied] = useState<boolean | undefined>();
   const [appliedStatus, setJobStatus] = useState("");
@@ -32,7 +35,7 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
     } else if (id) {
       getJobByID(id).then((resp) => setJob(resp?.jobs));
     }
-    getSavedJobs().then((resp) => {
+    getSavedJobs(userId).then((resp) => {
       if (resp?.jobs?.savedJobs?.includes(id)) {
         setSaved(true);
       } else {
@@ -40,7 +43,7 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
       }
     });
 
-    getAppliedJobs().then((resp) => {
+    getAppliedJobs(userId).then((resp) => {
       const found = resp?.result?.find((j) => {
         return j._id === job?._id;
       });
@@ -58,12 +61,12 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
     const args = id ? id : jobData?._id ? jobData?._id : "";
 
     if (!saved) {
-      const response = await saveJob(args);
+      const response = await saveJob(args, userId);
       if (response?.code === 200) {
         setSaved(true);
       }
     } else {
-      const response = await removedSavedJob(args);
+      const response = await removedSavedJob(args, userId);
       if (response?.code === 200) {
         setSaved(false);
       }
@@ -72,7 +75,7 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
 
   const handleApply = async () => {
     if (job?._id) {
-      const response = await applyJob(job._id);
+      const response = await applyJob(job._id, userId);
       if (response?.code === 200) {
         setApplied(true);
       }

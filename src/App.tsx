@@ -1,23 +1,13 @@
 import { BrowserRouter } from "react-router-dom";
 import { Route, Routes } from "react-router";
-import {
-  Home,
-  Jobs,
-  Layout,
-  Profile,
-  Register,
-  ResetPassword,
-} from "./components";
+import { Jobs, Layout, Profile, Register, ResetPassword } from "./components";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import { onSubmit, onVerify } from "./components/Register/utils";
 import { onLogin } from "./components/Login/utils";
 import Login from "./components/Login";
 import { onResetPassword } from "./components/ResetPassword/utils";
-import { onEdit } from "./components/Profile/utils";
 import JobDetail from "./components/JobDetail/JobDetail";
 import "./App.scss";
-import TrackStatus from "./components/TrackStatus/TrackStatus";
-import { TrackerMockData } from "./components/TrackStatus/TrackStatus.mock";
 
 export default function App() {
   return (
@@ -26,10 +16,9 @@ export default function App() {
         <Route
           path="/"
           element={
-            <TrackStatus
-              status={TrackerMockData.status}
-              appliedDate={TrackerMockData.appliedDate}
-            />
+            <Layout>
+              <div>Hello</div>
+            </Layout>
           }
         />
         <Route
@@ -45,7 +34,7 @@ export default function App() {
           path="/profile/:id"
           element={
             <Layout>
-              <Profile onEdit={onEdit} />
+              <Profile />
             </Layout>
           }
         />

@@ -7,23 +7,39 @@ import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { useEffect, useState } from "react";
-
+import { useCallback, useEffect, useState } from "react";
 import {
   Dropdown,
   ButtonGroup,
   Button as DropdownButton2,
 } from "react-bootstrap";
-import { getFromStorage } from "@/utils/localStorage.utils";
+import {
+  addToStorage,
+  getFromStorage,
+  removeFromStorage,
+} from "@/utils/localStorage.utils";
+import { getProfileImage } from "../Profile/utils";
+import { useReactResponsive } from "@/hooks/useReactResponsive.hooks";
 const Header = () => {
+  const { isDesktop, isDesktopLarge } = useReactResponsive();
   const navigate = useNavigate();
   const { _id: id, firstName, lastName } = getFromStorage("user");
-  console.log(getFromStorage("user"));
   const [searchText, setSearchText] = useState("");
   const [profileImage, setProfileImage] = useState("");
+  const setProfileImageData = useCallback(() => {
+    if (localStorage.userProfileImage) {
+      setProfileImage(localStorage.userProfileImage);
+    } else {
+      getProfileImage(id).then((resp) => {
+        setProfileImage(resp?.url);
+        addToStorage("userProfileImage", resp?.url);
+      });
+    }
+  }, [id]);
+
   useEffect(() => {
-    setProfileImage(localStorage.userProfileImage);
-  }, []);
+    setProfileImageData();
+  }, [setProfileImageData]);
 
   const handleFilterJob = (e) => {
     navigate("/jobs", {
@@ -55,7 +71,13 @@ const Header = () => {
     }
   };
 
-  return (
+  const handleLogout = () => {
+    removeFromStorage("user");
+    removeFromStorage("userProfileImage");
+    navigate("/login");
+  };
+
+  return isDesktop || isDesktopLarge ? (
     <div className="header">
       <div className="header__navigation">
         <ul className="header__navigation__list">
@@ -118,7 +140,7 @@ const Header = () => {
             </Dropdown.Menu>
           </Dropdown>
           <TextField
-            sx={{ fontSize: "small" }}
+            sx={{ fontSize: "small", width: "50%" }}
             size="small"
             id="outlined-basic"
             label="Search for job here..."
@@ -139,9 +161,65 @@ const Header = () => {
         >
           <Avatar alt="user-profile-pic" src={profileImage} />
         </div>
-        <Button onClick={() => {}} variant="contained" color="primary">
+        <Button onClick={handleLogout} variant="contained" color="primary">
           <LogoutIcon color="inherit" />
         </Button>
+      </div>
+    </div>
+  ) : (
+    <div className="header header-phone">
+      <div className="header-phone__searchbar">
+        <Dropdown
+          id="dropdown-filter-button"
+          onSelect={(e) => handleFilterJob(e)}
+        >
+          <Button
+            size="small"
+            sx={{ minWidth: "48px", padding: "6px" }}
+            variant="outlined"
+            onClick={handleSearchByButton}
+          >
+            <TuneRoundedIcon
+              sx={{
+                width: "22px",
+                height: "22px",
+              }}
+              color="inherit"
+            />
+          </Button>
+          <Dropdown.Menu>
+            <Dropdown.Item eventKey="jobRole">Job Role</Dropdown.Item>
+            <Dropdown.Item eventKey="datePosted">Date Posted</Dropdown.Item>
+            <Dropdown.Item eventKey="experience">Experience</Dropdown.Item>
+            <Dropdown.Item eventKey="location">Location</Dropdown.Item>
+            <Dropdown.Item eventKey="skill">Skill</Dropdown.Item>
+            <Dropdown.Item eventKey="organization">Organization</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        <TextField
+          sx={{ fontSize: "small", width: "70%" }}
+          size="small"
+          id="outlined-basic"
+          label="Search for job here..."
+          variant="outlined"
+          onKeyDown={(e) => handleSearch(e)}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <Button
+          size="small"
+          sx={{ minWidth: "48px" }}
+          variant="text"
+          onClick={handleSearchByButton}
+        >
+          <SearchRoundedIcon color="inherit" />
+        </Button>
+      </div>
+      <div
+        className="header-phone__avatar"
+        title={`${firstName} ${lastName}`}
+        onClick={() => navigate(`/profile/${id}`)}
+      >
+        <Avatar alt="user-profile-pic" src={profileImage} />
       </div>
     </div>
   );

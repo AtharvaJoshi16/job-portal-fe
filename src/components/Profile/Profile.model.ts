@@ -1,9 +1,3 @@
-import { ApiResponse } from "../types/ApiResponse";
-
-export interface ProfileProps {
-  onEdit: (UserProfileData: UserProfileData) => Promise<ApiResponse>;
-}
-
 export interface UserProfileData {
   gender: string;
   dateOfBirth: string;

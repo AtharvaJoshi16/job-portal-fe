@@ -94,3 +94,20 @@
     }
   }
 }
+
+.header-phone {
+  display: flex;
+  align-items: center;
+  &__avatar {
+    justify-content: flex-end;
+  }
+
+  &__searchbar {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+    width: 100%;
+    align-items: center;
+    margin-right: 20px;
+  }
+}

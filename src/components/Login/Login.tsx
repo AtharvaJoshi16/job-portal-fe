@@ -6,10 +6,12 @@ import { CredentialResponse, LoginPageProps } from "./Login.model";
 import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { addToStorage } from "@/utils/localStorage.utils";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 const Login = ({ onLogin }: LoginPageProps) => {
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
+      role: "employee",
       email: "",
       password: "",
     },
@@ -44,6 +46,41 @@ const Login = ({ onLogin }: LoginPageProps) => {
       <div className="login__header">LOGIN</div>
       <Form onSubmit={formik.handleSubmit} className="login__form">
         <Form.Group>
+          <FormControl
+            sx={{ width: "100%", marginBottom: "10px" }}
+            size="small"
+          >
+            <InputLabel
+              id="user-role-label"
+              sx={{ fontFamily: "var(--rubik-regular)" }}
+            >
+              User role
+            </InputLabel>
+            <Select
+              size="small"
+              sx={{ fontFamily: "var(--rubik-regular)" }}
+              labelId="user-role-label"
+              id="user-role"
+              value={formik.values.role}
+              label="User role"
+              onChange={(e) => {
+                formik.setFieldValue("role", e.target.value);
+              }}
+            >
+              <MenuItem
+                sx={{ fontFamily: "var(--rubik-regular)" }}
+                value="employee"
+              >
+                Employee
+              </MenuItem>
+              <MenuItem
+                sx={{ fontFamily: "var(--rubik-regular)" }}
+                value="recruiter"
+              >
+                Recruiter
+              </MenuItem>
+            </Select>
+          </FormControl>
           <Form.Control
             type="text"
             id="email"
