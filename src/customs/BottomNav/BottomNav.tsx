@@ -5,13 +5,17 @@ import BusinessCenterOutlinedIcon from "@mui/icons-material/BusinessCenterOutlin
 import BadgeIcon from "@mui/icons-material/Badge";
 import BookmarksOutlinedIcon from "@mui/icons-material/BookmarksOutlined";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import { useContext } from "react";
 import "./BottomNav.scss";
 import { useNavigate } from "react-router";
 import { NavContext } from "./nav.context";
+import PermIdentityRoundedIcon from "@mui/icons-material/PermIdentityRounded";
+import { getFromStorage } from "@/utils/localStorage.utils";
 
 export const BottomNav = () => {
   const navigate = useNavigate();
+  const userId = getFromStorage("user")?._id;
   const { activeIndex, setActiveIndex } = useContext(NavContext);
   const handleNavigate = (newValue: number) => {
     setActiveIndex?.(newValue);
@@ -26,6 +30,10 @@ export const BottomNav = () => {
       }
       case 2: {
         navigate("/applies");
+        break;
+      }
+      case 3: {
+        navigate(`/profile/${userId}`);
         break;
       }
       default: {
@@ -73,6 +81,16 @@ export const BottomNav = () => {
               <BadgeIcon style={{ color: "white" }} />
             ) : (
               <BadgeOutlinedIcon style={{ color: "white" }} />
+            )
+          }
+        />
+        <BottomNavigationAction
+          label="Profile"
+          icon={
+            activeIndex === 3 ? (
+              <PersonRoundedIcon style={{ color: "white" }} />
+            ) : (
+              <PermIdentityRoundedIcon style={{ color: "white" }} />
             )
           }
         />

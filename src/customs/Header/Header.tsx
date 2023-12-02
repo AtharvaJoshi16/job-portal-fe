@@ -3,13 +3,13 @@ import { useNavigate } from "react-router";
 import "./Header.scss";
 import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
-import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import { Icon } from "@mui/material";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
-import BadgeIcon from "@mui/icons-material/Badge";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import mainNavigationData from "../../authoredData/main-navigation.json";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +31,7 @@ import { getProfileImage } from "../Profile/utils";
 const Header = () => {
   const navigate = useNavigate();
   const { isDesktop, isDesktopLarge } = useReactResponsive();
-  const { _id: id, firstName, lastName } = getFromStorage("user");
+  const { _id: id, firstName, lastName, role } = getFromStorage("user");
   const [searchText, setSearchText] = useState("");
   const [profileImage, setProfileImage] = useState("");
 
@@ -90,33 +90,17 @@ const Header = () => {
     <div className="header">
       <div className="header__navigation">
         <ul className="header__navigation__list">
-          <li className="header__navigation__list__item">
-            <div
-              onClick={() => navigate("/jobs")}
-              className="header__navigation__list__item__icon-link"
-            >
-              <BusinessCenterIcon color="info" />
-              <p>Jobs</p>
-            </div>
-          </li>
-          <li className="header__navigation__list__item">
-            <div
-              onClick={() => navigate("/bookmarks")}
-              className="header__navigation__list__item__icon-link"
-            >
-              <BookmarksIcon color="info" />
-              <p>Bookmarks</p>
-            </div>
-          </li>
-          <li className="header__navigation__list__item">
-            <div
-              onClick={() => navigate("/applies")}
-              className="header__navigation__list__item__icon-link"
-            >
-              <BadgeIcon color="info" />
-              <p>Applies</p>
-            </div>
-          </li>
+          {mainNavigationData[role].map((item) => (
+            <li className="header__navigation__list__item">
+              <div
+                onClick={() => navigate(item.link)}
+                className="header__navigation__list__item__icon-link"
+              >
+                <Icon color={item.icon.color}>{item.icon.name}</Icon>
+                <p>{item.label}</p>
+              </div>
+            </li>
+          ))}
         </ul>
         <div className="header__searchbar">
           <DropdownMenu>
@@ -246,11 +230,15 @@ const Header = () => {
         </Button>
       </div>
       <div
-        className="header-phone__avatar"
+        className="header__right-section__avatar"
         title={`${firstName} ${lastName}`}
         onClick={() => navigate(`/profile/${id}`)}
       >
-        <Avatar alt="user-profile-pic" src={profileImage} />
+        <Avatar
+          className="header__right-section__avatar__comp"
+          alt="user-profile-pic"
+          src={profileImage}
+        />
       </div>
     </div>
   );

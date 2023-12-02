@@ -20,6 +20,13 @@ import FileUpload from "../FileUpload/FileUpload";
 import { getResumeFileName, saveResume } from "../Profile/utils";
 import { applyJob } from "../../apis/applyJob";
 import { getFromStorage } from "@/utils/localStorage.utils";
+import {
+  ArrowRight,
+  ArrowUpRightSquare,
+  CheckCircle,
+  ExternalLink,
+  Navigation,
+} from "lucide-react";
 // import { Comments } from "..";
 
 const Job = ({
@@ -268,21 +275,20 @@ const Job = ({
             </IconButton>
           </div>
           <div className="job__lower__actions__right">
-            <IconButton
+            <Button
               disabled={applied}
               onClick={() => setResumeModalOpen(true)}
               title="Apply"
-              size="large"
-              color="info"
+              variant="ghost"
             >
               {applied === undefined ? (
                 <CircularProgress style={{ width: "20px", height: "20px" }} />
               ) : !applied ? (
-                <NearMeRoundedIcon fontSize="inherit" />
+                <Navigation color="#0288d1" />
               ) : (
-                <DoneAllRoundedIcon fontSize="inherit" color="success" />
+                <CheckCircle color="green" />
               )}
-            </IconButton>
+            </Button>
             {
               <Modal
                 onClose={() => setResumeModalOpen(false)}
@@ -336,14 +342,14 @@ const Job = ({
                 </Box>
               </Modal>
             }
-            <IconButton
+            <Button
               title="Go To Job"
-              size="large"
-              color="info"
+              size="sm"
+              variant="ghost"
               onClick={() => navigate(`/jobs/${_id}`)}
             >
-              <ArrowForwardRoundedIcon fontSize="inherit" />
-            </IconButton>
+              <ArrowRight />
+            </Button>
           </div>
         </div>
       </div>

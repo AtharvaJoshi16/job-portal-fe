@@ -1,0 +1,62 @@
+{
+  "employee": [
+    {
+      "label": "Jobs",
+      "link": "/jobs",
+      "icon": {
+        "name": "business_center_icon",
+        "color": "info"
+      }
+    },
+    {
+      "label": "Bookmarks",
+      "link": "/bookmarks",
+      "icon": {
+        "name": "bookmarks_icon",
+        "color": "info"
+      }
+    },
+    {
+      "label": "Applies",
+      "link": "/applies",
+      "icon": {
+        "name": "badge_icon",
+        "color": "info"
+      }
+    },
+    {
+      "label": "Organizations",
+      "link": "/organizations",
+      "icon": {
+        "name": "maps_home_work_rounded_icon",
+        "color": "info"
+      }
+    }
+  ],
+  "recruiter": [
+    {
+      "label": "Jobs",
+      "link": "/jobs",
+      "icon": {
+        "name": "business_center_icon",
+        "color": "info"
+      }
+    },
+    {
+      "label": "Job Posts",
+      "link": "/job-posts",
+      "icon": {
+        "name": "business_center_icon",
+        "color": "info"
+      }
+    },
+    {
+      "label": "Your Organization",
+      "link": "/organization",
+      "icon": {
+        "name": "maps_home_work_rounded_icon",
+        "color": "info"
+      }
+    }
+  ]
+}
