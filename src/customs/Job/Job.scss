@@ -137,6 +137,11 @@
         color: rgb(126, 126, 126);
         letter-spacing: 0.3px;
         font-weight: 600;
+
+        &__openings {
+          color: green;
+          font-style: italic;
+        }
       }
     }
 

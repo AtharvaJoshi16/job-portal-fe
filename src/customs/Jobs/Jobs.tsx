@@ -14,12 +14,16 @@ import { useLocation } from "react-router";
 import { JobsProps } from "./Jobs.model";
 import { getAppliedJobs } from "../../apis/applyJob";
 import { searchJob } from "../../apis/searchJob";
+import { getFromStorage } from "@/utils/localStorage.utils";
 
 const Jobs = ({ bookmark, applies }: JobsProps) => {
   const [jobs, setJobs] = useState<JobProps[]>();
+  const user = getFromStorage("user");
+  const userId = user?._id;
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<AppliedJobs[] | undefined>();
   const { state } = useLocation();
+  const appliedIds = appliedJobs?.map((job) => job._id);
 
   const setData = useCallback(() => {
     if (state?.searchText) {
@@ -28,25 +32,27 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
       });
     }
     if (bookmark) {
-      getSavedJobs(true).then((resp) => {
+      getSavedJobs(userId, true).then((resp) => {
         setJobs(resp?.jobs?.savedJobs);
         setBookmarks(resp?.ids);
       });
     } else {
-      getSavedJobs().then((resp) => setBookmarks(resp?.jobs?.savedJobs));
+      getSavedJobs(userId).then((resp) => setBookmarks(resp?.jobs?.savedJobs));
     }
-    getAppliedJobs().then((resp) => setAppliedJobs(resp?.result));
-  }, [bookmark, state]);
-
+    getAppliedJobs(userId).then((resp) => {
+      setAppliedJobs(resp?.result);
+    });
+  }, [bookmark, state, userId]);
   const checkBookmark = useCallback(() => {
     if (!bookmark) {
       if (state?.filter) {
-        filterJobs(state?.filter).then((resp) => setJobs(resp?.jobs));
+        filterJobs(state?.filter, userId).then((resp) => setJobs(resp?.jobs));
       } else {
         getJobs().then((resp) => setJobs(resp?.jobs));
       }
     }
-  }, [state?.filter, bookmark]);
+  }, [state?.filter, bookmark, userId]);
+
   useEffect(() => {
     setData();
     checkBookmark();
@@ -65,16 +71,29 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
         </p>
       )}
       <div className="jobs__grid">
-        {jobs?.map((job) => (
-          <Job
-            variant={applies ? "apply" : "default"}
-            {...job}
-            onSaveJob={saveJob}
-            onRemoveSavedJob={removedSavedJob}
-            bookmarks={bookmarks}
-            appliedJobs={appliedJobs}
-          />
-        ))}
+        {jobs?.map((job) =>
+          applies ? (
+            appliedIds?.includes(job._id) && (
+              <Job
+                variant={applies ? "apply" : "default"}
+                {...job}
+                onSaveJob={saveJob}
+                onRemoveSavedJob={removedSavedJob}
+                bookmarks={bookmarks}
+                appliedJobs={appliedJobs}
+              />
+            )
+          ) : (
+            <Job
+              variant={applies ? "apply" : "default"}
+              {...job}
+              onSaveJob={saveJob}
+              onRemoveSavedJob={removedSavedJob}
+              bookmarks={bookmarks}
+              appliedJobs={appliedJobs}
+            />
+          )
+        )}
       </div>
     </div>
   );

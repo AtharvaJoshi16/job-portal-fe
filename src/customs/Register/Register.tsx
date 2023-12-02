@@ -4,14 +4,9 @@ import { useFormik } from "formik";
 import { useCallback, useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  RegisterApiResponse,
-  RegisterPageProps,
-  VerifyApiResponse,
-} from "./Register.model";
+import { RegisterPageProps } from "./Register.model";
 import { useNavigate } from "react-router";
 import { useTheme } from "@/components/theme-provider";
-import { register } from "module";
 
 const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
   const navigate = useNavigate();
@@ -26,7 +21,6 @@ const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
     onSubmit: async (values) => {
       if (passwordMatched) {
         const response = await onSubmit?.(values);
-        setSubmitResponse(response);
         alert(response.message);
         navigate("/login");
       }
@@ -37,8 +31,8 @@ const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
   const [verifyDisabled, setVerifyDisabled] = useState(false);
   const [warningText, setWarningText] = useState("");
   const [passwordMatched, setPasswordMatch] = useState(false);
-  const [verifyResponse, setVerifyResponse] = useState<VerifyApiResponse>();
-  const [submitResponse, setSubmitResponse] = useState<RegisterApiResponse>();
+  // const [verifyResponse, setVerifyResponse] = useState<VerifyApiResponse>();
+  // const [submitResponse, setSubmitResponse] = useState<RegisterApiResponse>();
   const comparePasswordFields = useCallback(() => {
     if (formik.values.password !== confPass) {
       setWarningText("Passwords do not match!");
@@ -55,7 +49,6 @@ const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
 
   const handleVerify = async () => {
     const response = await onVerify?.(formik.values.email);
-    setVerifyResponse(response);
     alert(response.message);
     setVerifyDisabled(true);
   };

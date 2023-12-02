@@ -19,11 +19,13 @@ import { returnDateDifference } from "../JobDetail/utils";
 import FileUpload from "../FileUpload/FileUpload";
 import { getResumeFileName, saveResume } from "../Profile/utils";
 import { applyJob } from "../../apis/applyJob";
+import { getFromStorage } from "@/utils/localStorage.utils";
 // import { Comments } from "..";
 
 const Job = ({
   _id,
   jobRole,
+  openings,
   variant = "default",
   experienceLevel,
   skills,
@@ -43,25 +45,25 @@ const Job = ({
   const [bookmarked, setBookmark] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [resumeModalOpen, setResumeModalOpen] = useState(false);
-  const dateDiff = returnDateDifference(datePosted);
+  const dateDiff = datePosted ? returnDateDifference(datePosted) : null;
   const [warningText, setWarningText] = useState("");
   const [uploaded, setUploaded] = useState<boolean | undefined>();
   const [resumeFilename, setResumeFilename] = useState("");
   const [applied, setApplied] = useState<boolean | undefined>();
   const [appliedJob, setAppliedJob] = useState<AppliedJobs>();
 
-  const { id } = JSON.parse(localStorage.user);
+  const userId = getFromStorage("user")?._id;
 
   const setData = useCallback(async () => {
     if (resumeModalOpen) {
-      const userResume = await getResumeFileName();
+      const userResume = await getResumeFileName(userId);
       if (userResume?.filename) {
         setResumeFilename(userResume?.filename);
       } else {
         setResumeFilename("No File Chosen");
       }
     }
-  }, [resumeModalOpen]);
+  }, [resumeModalOpen, userId]);
 
   useEffect(() => {
     const job = appliedJobs?.find((j) => j._id === _id);
@@ -85,15 +87,15 @@ const Job = ({
 
   const handleBookmark = () => {
     if (!bookmarked) {
-      onSaveJob?.(_id);
+      onSaveJob?.(_id, userId);
     } else {
-      onRemoveSavedJob?.(_id);
+      onRemoveSavedJob?.(_id, userId);
     }
     setBookmark(!bookmarked);
   };
 
   const onDownloadResume = () => {
-    window.location.href = `http://localhost:8080/api/v1/get-resume?userId=${id}&download=true`;
+    window.location.href = `http://localhost:8080/api/v1/get-resume?userId=${userId}&download=true`;
   };
 
   const onResumeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,7 +110,7 @@ const Job = ({
         const formdata = new FormData();
         if (e.target?.files?.[0]) {
           formdata.append("resume", e.target?.files?.[0]);
-          const response = await saveResume(formdata);
+          const response = await saveResume(formdata, userId);
           if (response?.code === 200) {
             setUploaded(true);
           } else {
@@ -120,7 +122,7 @@ const Job = ({
   };
 
   const handleApply = async () => {
-    const response = await applyJob(_id);
+    const response = await applyJob(_id, userId);
     if (response?.code === 200) {
       setApplied(true);
     }
@@ -214,7 +216,10 @@ const Job = ({
         <div className="job__lower__date-posted">
           {variant === "default" || !appliedJob ? (
             <>
-              <p className="job__lower__date-posted__text">{dateDiff}</p>
+              <p className=" job__lower__date-posted__text job__lower__date-posted__text__openings">
+                {openings} openings
+              </p>
+              <p className="job__lower__date-posted__text">Posted {dateDiff}</p>
               <p className="job__lower__date-posted__text">
                 Applicants: {applications}
               </p>

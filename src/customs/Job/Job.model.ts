@@ -15,10 +15,11 @@ export interface JobProps {
   skills: Array<string>;
   workingMode: string;
   recruiter_id: string;
-  onSaveJob?: (job_id: string) => void;
-  onRemoveSavedJob?: (job_id: string) => void;
+  onSaveJob?: (job_id: string, userId: string) => void;
+  onRemoveSavedJob?: (job_id: string, userId: string) => void;
   bookmarks?: string[];
   appliedJobs?: AppliedJobs[];
+  openings: number;
 }
 
 export interface AppliedJobs {

@@ -3,7 +3,6 @@ import { useFormik } from "formik";
 import {
   Certifications,
   Experience,
-  ProfileProps,
   SkillLevel,
   Skills,
   UserProfileData,
@@ -24,6 +23,7 @@ import {
   getProfile,
   getProfileImage,
   getResumeFileName,
+  onEdit,
   saveProfileImage,
   saveResume,
 } from "./utils";
@@ -33,9 +33,14 @@ import "react-image-crop/src/ReactCrop.scss";
 import ReactCrop, { Crop } from "react-image-crop";
 import { ProfileImageResponse } from "../types/ApiResponse";
 import FileUpload from "../FileUpload/FileUpload";
+import { addToStorage, getFromStorage } from "@/utils/localStorage.utils";
 
-const Profile = ({ onEdit }: ProfileProps) => {
-  const { id } = useParams();
+const Profile = () => {
+  const { id: userIdFromParams } = useParams();
+  const userId = userIdFromParams
+    ? userIdFromParams
+    : getFromStorage("user")?._id;
+  const email = getFromStorage("user")?.email;
   const navigate = useNavigate();
   const [countryCode, setCountryCode] = useState<string | null>("+91");
   const countryCodes = ["+91", "+37", "+61", "+89", "+72"];
@@ -72,11 +77,13 @@ const Profile = ({ onEdit }: ProfileProps) => {
       obj.skills = skillsArray;
       obj.certifications = certifications;
       obj.experience = experience;
-      const response = await onEdit?.(obj);
+      const response = userId
+        ? await onEdit?.(obj, userId, email)
+        : await onEdit?.(obj, getFromStorage("user")?._id, email);
       const formdata = new FormData();
       if (profileImageObject) {
         formdata.append("profileImage", profileImageObject);
-        await saveProfileImage(formdata);
+        await saveProfileImage(formdata, userId);
       }
       if (response?.code === 200) {
         setAlert({
@@ -106,18 +113,18 @@ const Profile = ({ onEdit }: ProfileProps) => {
   const imageRef = useRef<HTMLImageElement>(null);
   useEffect(() => {
     async function getProfileApi() {
-      if (id) {
-        const response = await getProfile(id);
+      if (userId) {
+        const response = await getProfile(userId);
         if (response?.profile) {
           formik.setValues(response?.profile);
           setSkills(response?.profile?.skills);
           setCertifications(response?.profile?.certifications);
           setExperience(response?.profile?.experience);
         }
-        const profileImageResponse = await getProfileImage();
+        const profileImageResponse = await getProfileImage(userId);
         setImageResponse(profileImageResponse);
-        localStorage.setItem("userProfileImage", profileImageResponse.url);
-        const userResume = await getResumeFileName();
+        addToStorage("userProfileImage", profileImageResponse.url);
+        const userResume = await getResumeFileName(userId);
         if (userResume?.filename) {
           setResumeFilename(userResume?.filename);
         } else {
@@ -237,7 +244,7 @@ const Profile = ({ onEdit }: ProfileProps) => {
         const formdata = new FormData();
         if (e.target?.files?.[0]) {
           formdata.append("resume", e.target?.files?.[0]);
-          const response = await saveResume(formdata);
+          const response = await saveResume(formdata, userId);
           if (response?.code === 200) {
             setAlert({ message: response?.message, variant: "success" });
             setVisibility(true);
@@ -254,7 +261,7 @@ const Profile = ({ onEdit }: ProfileProps) => {
   };
 
   const handleDownloadResume = async () => {
-    window.location.href = `http://localhost:8080/api/v1/get-resume?userId=${id}&download=true`;
+    window.location.href = `http://localhost:8080/api/v1/get-resume?userId=${userId}&download=true`;
   };
 
   return (

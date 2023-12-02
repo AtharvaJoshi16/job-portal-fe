@@ -20,7 +20,14 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <div>Hello</div>
+            </Layout>
+          }
+        />
         <Route
           path="/register"
           element={<Register onVerify={onVerify} onSubmit={onSubmit} />}
@@ -34,7 +41,7 @@ export default function App() {
           path="/profile/:id"
           element={
             <Layout>
-              <Profile onEdit={onEdit} />
+              <Profile />
             </Layout>
           }
         />

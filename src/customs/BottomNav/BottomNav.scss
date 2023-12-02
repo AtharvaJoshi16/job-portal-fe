@@ -1,0 +1,20 @@
+@import "../commons/index.scss";
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-radius: 8px 8px 0 0;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  .css-imwso6-MuiBottomNavigationAction-label {
+    font-family: var(--rubik-regular);
+    letter-spacing: 0.3px;
+    color: white;
+  }
+
+  .css-1bjk3jo-MuiButtonBase-root-MuiBottomNavigationAction-root.Mui-selected {
+    color: white;
+    .css-imwso6-MuiBottomNavigationAction-label {
+      letter-spacing: 0.8px;
+    }
+  }
+}

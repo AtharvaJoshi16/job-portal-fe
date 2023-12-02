@@ -9,7 +9,7 @@ export interface UserLoginData {
 }
 
 export interface LoginApiResponse {
-  userId?: string;
+  user?: string;
   token?: string;
   message?: string;
 }

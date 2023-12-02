@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router";
 import "./Header.scss";
-import { ChevronDown } from "lucide-react";
 import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
@@ -9,9 +8,8 @@ import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import BadgeIcon from "@mui/icons-material/Badge";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,16 +18,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import { ModeToggle } from "@/components/mode-toggle";
+import { ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useReactResponsive } from "@/hooks/useReactResponsive.hooks";
+import { Dropdown } from "react-bootstrap";
+import {
+  addToStorage,
+  getFromStorage,
+  removeFromStorage,
+} from "@/utils/localStorage.utils";
+import { getProfileImage } from "../Profile/utils";
 const Header = () => {
   const navigate = useNavigate();
-  const { id } = JSON.parse(localStorage.user);
+  const { isDesktop, isDesktopLarge } = useReactResponsive();
+  const { _id: id, firstName, lastName } = getFromStorage("user");
   const [searchText, setSearchText] = useState("");
   const [profileImage, setProfileImage] = useState("");
+
+  const setProfileImageData = useCallback(() => {
+    if (localStorage.userProfileImage) {
+      setProfileImage(localStorage.userProfileImage);
+    } else {
+      getProfileImage(id).then((resp) => {
+        setProfileImage(resp?.url);
+        addToStorage("userProfileImage", resp?.url);
+      });
+    }
+  }, [id]);
+
   useEffect(() => {
-    setProfileImage(localStorage.userProfileImage);
-  }, []);
+    setProfileImageData();
+  }, [setProfileImageData]);
 
   const handleFilterJob = (e) => {
     navigate("/jobs", {
@@ -61,7 +80,13 @@ const Header = () => {
     }
   };
 
-  return (
+  const handleLogout = () => {
+    removeFromStorage("user");
+    removeFromStorage("userProfileImage");
+    navigate("/login");
+  };
+
+  return isDesktop || isDesktopLarge ? (
     <div className="header">
       <div className="header__navigation">
         <ul className="header__navigation__list">
@@ -156,10 +181,9 @@ const Header = () => {
         </div>
       </div>
       <div className="header__right-section">
-        <ModeToggle />
         <div
           className="header__right-section__avatar"
-          title=""
+          title={`${firstName} ${lastName}`}
           onClick={() => navigate(`/profile/${id}`)}
         >
           <Avatar
@@ -168,9 +192,65 @@ const Header = () => {
             src={profileImage}
           />
         </div>
-        <Button onClick={() => {}} variant="destructive">
+        <Button onClick={handleLogout} variant="outline">
           <LogoutIcon color="inherit" />
         </Button>
+      </div>
+    </div>
+  ) : (
+    <div className="header header-phone">
+      <div className="header-phone__searchbar">
+        <Dropdown
+          id="dropdown-filter-button"
+          onSelect={(e) => handleFilterJob(e)}
+        >
+          <Button
+            size="sm"
+            //sx={{ minWidth: "48px", padding: "6px" }}
+            variant="outline"
+            onClick={handleSearchByButton}
+          >
+            <TuneRoundedIcon
+              sx={{
+                width: "22px",
+                height: "22px",
+              }}
+              color="inherit"
+            />
+          </Button>
+          <Dropdown.Menu>
+            <Dropdown.Item eventKey="jobRole">Job Role</Dropdown.Item>
+            <Dropdown.Item eventKey="datePosted">Date Posted</Dropdown.Item>
+            <Dropdown.Item eventKey="experience">Experience</Dropdown.Item>
+            <Dropdown.Item eventKey="location">Location</Dropdown.Item>
+            <Dropdown.Item eventKey="skill">Skill</Dropdown.Item>
+            <Dropdown.Item eventKey="organization">Organization</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+        <Input
+          //sx={{ fontSize: "small", width: "70%" }}
+          //size="sm"
+          id="outlined-basic"
+          placeholder="Search for job here..."
+          //variant="outline"
+          onKeyDown={(e) => handleSearch(e)}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <Button
+          size="sm"
+          //sx={{ minWidth: "48px" }}
+          variant="outline"
+          onClick={handleSearchByButton}
+        >
+          <SearchRoundedIcon color="inherit" />
+        </Button>
+      </div>
+      <div
+        className="header-phone__avatar"
+        title={`${firstName} ${lastName}`}
+        onClick={() => navigate(`/profile/${id}`)}
+      >
+        <Avatar alt="user-profile-pic" src={profileImage} />
       </div>
     </div>
   );
