@@ -1,7 +1,11 @@
 import axios from "axios";
 
-export const getJobs = async () => {
-  const response = await axios.get("http://localhost:8081/jobs/v1/view-jobs");
+export const getJobs = async (recruiter_id?: string) => {
+  const response = recruiter_id
+    ? await axios.get(
+        `http://localhost:8081/jobs/v1/view-jobs?recruiter_id=${recruiter_id}`
+      )
+    : await axios.get("http://localhost:8081/jobs/v1/view-jobs");
   return response.data;
 };
 

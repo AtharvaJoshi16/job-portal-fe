@@ -43,10 +43,10 @@
       }
     },
     {
-      "label": "Job Posts",
-      "link": "/job-posts",
+      "label": "Post a Job",
+      "link": "/post-job",
       "icon": {
-        "name": "business_center_icon",
+        "name": "queue_rounded_icon",
         "color": "info"
       }
     },

@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { JobProps } from "../Job/Job.model";
 import { JobDetailProps } from "./JobDetail.model";
-import { useState, useEffect } from "react";
-import { getJobByID, returnDateDifference } from "./utils";
+import { useState, useEffect, useMemo } from "react";
+import { editJob, getJobByID, returnDateDifference } from "./utils";
 import "./JobDetail.scss";
 import {
   BookmarkCheck,
@@ -21,6 +21,7 @@ import { getSavedJobs, removedSavedJob, saveJob } from "../Jobs/utils";
 import { applyJob, getAppliedJobs } from "../../apis/applyJob";
 import TrackStatus from "../TrackStatus/TrackStatus";
 import { getFromStorage } from "@/utils/localStorage.utils";
+import { EditableText } from "../EditableText/EditableText";
 const JobDetail = ({ jobData }: JobDetailProps) => {
   const [job, setJob] = useState<JobProps>();
   const { id } = useParams();
@@ -61,6 +62,11 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
     });
   }, [id, job?._id, jobData, userId]);
 
+  const appliedDiffResult = useMemo(
+    () => returnDateDifference(appliedDate),
+    [appliedDate]
+  );
+
   const handleSave = async () => {
     const args = id ? id : jobData?._id ? jobData?._id : "";
 
@@ -85,6 +91,13 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
       }
     }
   };
+
+  const handleEditableBlur = async (value, field) => {
+    const payload = { ...job };
+    payload[field] = value;
+    await editJob?.(payload, userId);
+  };
+
   return !job ? (
     <CircularProgress
       style={{ width: "60px", height: "60px" }}
@@ -105,7 +118,12 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
         <div className="job-detail__header-section__right">
           <p className="job-detail__header-section__right__role-org">
             <span className="job-detail__header-section__right__role-org__role">
-              {job?.jobRole}
+              <EditableText
+                userRole={user?.role}
+                field="jobRole"
+                initialText={job?.jobRole}
+                onBlur={handleEditableBlur}
+              />
             </span>
             <span className="job-detail__header-section__right__role-org__org">
               {`at ${job?.organization}`}
@@ -227,39 +245,50 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
         </div>
       </div>
 
-      <div className="job-detail__actions">
-        {applied === undefined ? (
-          <Button disabled>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          </Button>
-        ) : applied ? (
-          <Button variant="secondary" disabled={applied} onClick={handleApply}>
-            APPLIED <CheckCheck className="ml-2 h-5 w-5" />
-          </Button>
-        ) : (
-          <Button onClick={handleApply}>
-            APPLY <ExternalLink className="ml-2 h-5 w-5" />
-          </Button>
-        )}
-        {saved === undefined ? (
-          <Button disabled>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          </Button>
-        ) : saved ? (
-          <Button onClick={handleSave}>
-            SAVED <BookmarkCheck className="ml-2 h-5 w-5" />
-          </Button>
-        ) : (
-          <Button onClick={handleSave}>
-            SAVE <BookmarkPlus className="ml-2 h-5 w-5" />
-          </Button>
-        )}
-        {applied && (
-          <p className="job-detail__actions__appliedDate">
-            Applied {returnDateDifference(appliedDate)}
-          </p>
-        )}
-      </div>
+      {user?.role === "employee" ? (
+        <div className="job-detail__actions">
+          {applied === undefined ? (
+            <Button disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            </Button>
+          ) : applied ? (
+            <Button
+              variant="secondary"
+              disabled={applied}
+              onClick={handleApply}
+            >
+              APPLIED <CheckCheck className="ml-2 h-5 w-5" />
+            </Button>
+          ) : (
+            <Button onClick={handleApply}>
+              APPLY <ExternalLink className="ml-2 h-5 w-5" />
+            </Button>
+          )}
+          {saved === undefined ? (
+            <Button disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            </Button>
+          ) : saved ? (
+            <Button onClick={handleSave}>
+              SAVED <BookmarkCheck className="ml-2 h-5 w-5" />
+            </Button>
+          ) : (
+            <Button onClick={handleSave}>
+              SAVE <BookmarkPlus className="ml-2 h-5 w-5" />
+            </Button>
+          )}
+          {applied && (
+            <p className="job-detail__actions__appliedDate">
+              Applied {appliedDiffResult}
+            </p>
+          )}
+        </div>
+      ) : (
+        <div className="job-detail__actions">
+          <Button variant="outline">Edit</Button>
+          <Button variant="destructive">Delete</Button>
+        </div>
+      )}
 
       {appliedStatus && (
         <div className="job-detail__status">

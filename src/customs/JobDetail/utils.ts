@@ -8,6 +8,14 @@ export const getJobByID = async (jobId: string) => {
   return response.data;
 };
 
+export const editJob = async (jobData, recruiter_id: string) => {
+  const response = await axios.post(
+    `http://localhost:8081/jobs/v1/create-edit-job?recruiter_id=${recruiter_id}&job_id=${jobData._id}`,
+    jobData
+  );
+  return response.data;
+};
+
 export const returnDateDifference = (postedDate: string) => {
   const str = postedDate.split("/");
   const d = str.reverse().join(",");
@@ -16,6 +24,7 @@ export const returnDateDifference = (postedDate: string) => {
   let result = 0;
   let unit = "";
   const diff = new DateDiff(date2, date1);
+  console.log(diff.minutes(), diff.seconds());
   if (diff.years() >= 1) {
     result = diff.years();
     unit = "years";
@@ -38,6 +47,5 @@ export const returnDateDifference = (postedDate: string) => {
     result = diff.seconds();
     unit = "seconds";
   }
-
   return `${Math.round(result)} ${unit} ago`;
 };

@@ -3,14 +3,11 @@ import RoomIcon from "@mui/icons-material/Room";
 import PaidIcon from "@mui/icons-material/Paid";
 import StarsIcon from "@mui/icons-material/Stars";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
+import ModeCommentRoundedIcon from "@mui/icons-material/ModeCommentRounded";
 import ModeCommentOutlinedIcon from "@mui/icons-material/ModeCommentOutlined";
 import BookmarkBorderRoundedIcon from "@mui/icons-material/BookmarkBorderRounded";
 import BookmarkRoundedIcon from "@mui/icons-material/BookmarkRounded";
-import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
-import ModeCommentRoundedIcon from "@mui/icons-material/ModeCommentRounded";
-import NearMeRoundedIcon from "@mui/icons-material/NearMeRounded";
 import { Button } from "@/components/ui/button";
-import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import "./Job.scss";
 import { IconButton, Modal, Box, CircularProgress, Chip } from "@mui/material";
 import { useState, useEffect, useCallback } from "react";
@@ -22,10 +19,10 @@ import { applyJob } from "../../apis/applyJob";
 import { getFromStorage } from "@/utils/localStorage.utils";
 import {
   ArrowRight,
-  ArrowUpRightSquare,
   CheckCircle,
-  ExternalLink,
+  FileEdit,
   Navigation,
+  Trash,
 } from "lucide-react";
 // import { Comments } from "..";
 
@@ -47,6 +44,7 @@ const Job = ({
   bookmarks,
   appliedJobs,
   workingMode,
+  onDelete,
 }: JobProps) => {
   const navigate = useNavigate();
   const [bookmarked, setBookmark] = useState(false);
@@ -59,7 +57,7 @@ const Job = ({
   const [applied, setApplied] = useState<boolean | undefined>();
   const [appliedJob, setAppliedJob] = useState<AppliedJobs>();
 
-  const userId = getFromStorage("user")?._id;
+  const { _id: userId, role } = getFromStorage("user");
 
   const setData = useCallback(async () => {
     if (resumeModalOpen) {
@@ -133,6 +131,10 @@ const Job = ({
     if (response?.code === 200) {
       setApplied(true);
     }
+  };
+
+  const handleJobDelete = () => {
+    onDelete?.(_id, userId);
   };
 
   return (
@@ -252,106 +254,145 @@ const Job = ({
             </>
           )}
         </div>
-        <div className="job__lower__actions">
-          <div className="job__lower__actions__left">
-            <IconButton size="small" onClick={handleComments}>
-              {showComments ? (
-                <ModeCommentRoundedIcon fontSize="small" />
-              ) : (
-                <ModeCommentOutlinedIcon fontSize="small" />
-              )}
-            </IconButton>
-            {/* {showComments && (
+        {role === "employee" ? (
+          <div className="job__lower__actions">
+            <div className="job__lower__actions__left">
+              <IconButton size="small" onClick={handleComments}>
+                {showComments ? (
+                  <ModeCommentRoundedIcon fontSize="small" />
+                ) : (
+                  <ModeCommentOutlinedIcon fontSize="small" />
+                )}
+              </IconButton>
+              {/* {showComments && (
               <div className="job__lower__actions__comments">
                 <Comments comments={comments} />
               </div>
             )} */}
-            <IconButton size="small" onClick={handleBookmark}>
-              {bookmarked ? (
-                <BookmarkRoundedIcon fontSize="small" />
-              ) : (
-                <BookmarkBorderRoundedIcon fontSize="small" />
-              )}
-            </IconButton>
-          </div>
-          <div className="job__lower__actions__right">
-            <Button
-              disabled={applied}
-              onClick={() => setResumeModalOpen(true)}
-              title="Apply"
-              variant="ghost"
-            >
-              {applied === undefined ? (
-                <CircularProgress style={{ width: "20px", height: "20px" }} />
-              ) : !applied ? (
-                <Navigation color="#0288d1" />
-              ) : (
-                <CheckCircle color="green" />
-              )}
-            </Button>
-            {
-              <Modal
-                onClose={() => setResumeModalOpen(false)}
-                open={resumeModalOpen}
+              <IconButton size="small" onClick={handleBookmark}>
+                {bookmarked ? (
+                  <BookmarkRoundedIcon fontSize="small" />
+                ) : (
+                  <BookmarkBorderRoundedIcon fontSize="small" />
+                )}
+              </IconButton>
+            </div>
+            <div className="job__lower__actions__right">
+              <Button
+                disabled={applied}
+                onClick={() => setResumeModalOpen(true)}
+                title="Apply"
+                variant="ghost"
               >
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: 500,
-                    bgcolor: "#dcdcdc", // Change to whatever color you want
-                    border: "2px solid #9f9f9f",
-                    borderRadius: "8px",
-                    boxShadow: 24,
-                    p: 4,
-                  }}
+                {applied === undefined ? (
+                  <CircularProgress style={{ width: "20px", height: "20px" }} />
+                ) : !applied ? (
+                  <Navigation color="#0288d1" />
+                ) : (
+                  <CheckCircle color="green" />
+                )}
+              </Button>
+              {
+                <Modal
+                  onClose={() => setResumeModalOpen(false)}
+                  open={resumeModalOpen}
                 >
-                  <FileUpload
-                    uploadStatus={uploaded}
-                    warningText={warningText}
-                    headingLabel="Confirm Resume"
-                    resumeFilename={resumeFilename}
-                    handleDownloadResume={onDownloadResume}
-                    handleResumeChange={(e) => onResumeChange(e)}
-                  />
                   <Box
                     sx={{
-                      display: "flex",
-                      gap: "10px",
-                      justifyContent: "flex-end",
-                      marginTop: "10px",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: 500,
+                      bgcolor: "#dcdcdc", // Change to whatever color you want
+                      border: "2px solid #9f9f9f",
+                      borderRadius: "8px",
+                      boxShadow: 24,
+                      p: 4,
                     }}
                   >
-                    <Button
-                      disabled={applied}
-                      variant="outline"
-                      onClick={handleApply}
+                    <FileUpload
+                      uploadStatus={uploaded}
+                      warningText={warningText}
+                      headingLabel="Confirm Resume"
+                      resumeFilename={resumeFilename}
+                      handleDownloadResume={onDownloadResume}
+                      handleResumeChange={(e) => onResumeChange(e)}
+                    />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        gap: "10px",
+                        justifyContent: "flex-end",
+                        marginTop: "10px",
+                      }}
                     >
-                      Apply
-                    </Button>
-                    <Button
-                      disabled={applied}
-                      variant="destructive"
-                      onClick={() => setResumeModalOpen(false)}
-                    >
-                      Close
-                    </Button>
+                      <Button
+                        disabled={applied}
+                        variant="outline"
+                        onClick={handleApply}
+                      >
+                        Apply
+                      </Button>
+                      <Button
+                        disabled={applied}
+                        variant="destructive"
+                        onClick={() => setResumeModalOpen(false)}
+                      >
+                        Close
+                      </Button>
+                    </Box>
                   </Box>
-                </Box>
-              </Modal>
-            }
-            <Button
-              title="Go To Job"
-              size="sm"
-              variant="ghost"
-              onClick={() => navigate(`/jobs/${_id}`)}
-            >
-              <ArrowRight />
-            </Button>
+                </Modal>
+              }
+              <Button
+                title="Go To Job"
+                size="sm"
+                variant="ghost"
+                onClick={() => navigate(`/jobs/${_id}`)}
+              >
+                <ArrowRight />
+              </Button>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="job__lower__actions">
+            <div className="job__lower__actions__left">
+              <IconButton size="small" onClick={handleComments}>
+                {showComments ? (
+                  <ModeCommentRoundedIcon fontSize="small" />
+                ) : (
+                  <ModeCommentOutlinedIcon fontSize="small" />
+                )}
+              </IconButton>
+              {/* {showComments && (
+              <div className="job__lower__actions__comments">
+                <Comments comments={comments} />
+              </div>
+            )} */}
+            </div>
+            <div className="job__lower__actions__right">
+              <Button
+                title="Go To Job"
+                size="sm"
+                variant="ghost"
+                onClick={() => navigate(`/jobs/${_id}`)}
+              >
+                <ArrowRight />
+              </Button>
+              <Button size="icon" variant="outline" onClick={() => {}}>
+                <FileEdit className="w-5 h-5" />
+              </Button>
+              <Button
+                size="icon"
+                variant="destructive"
+                onClick={handleJobDelete}
+              >
+                <Trash className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

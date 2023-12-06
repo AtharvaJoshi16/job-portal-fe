@@ -8,8 +8,15 @@ import { GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/components/theme-provider";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { addToStorage } from "@/utils/localStorage.utils";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 const Login = ({ onLogin }: LoginPageProps) => {
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -55,38 +62,28 @@ const Login = ({ onLogin }: LoginPageProps) => {
         LOGIN
       </div>
       <Form onSubmit={formik.handleSubmit} className="login__form">
-        <FormControl sx={{ width: "100%", marginBottom: "10px" }} size="small">
-          <InputLabel
-            id="user-role-label"
-            sx={{ fontFamily: "var(--rubik-regular)" }}
-          >
-            User role
-          </InputLabel>
-          <Select
-            size="small"
-            sx={{ fontFamily: "var(--rubik-regular)" }}
-            labelId="user-role-label"
-            id="user-role"
-            value={formik.values.role}
-            label="User role"
-            onChange={(e) => {
-              formik.setFieldValue("role", e.target.value);
-            }}
-          >
-            <MenuItem
-              sx={{ fontFamily: "var(--rubik-regular)" }}
-              value="employee"
-            >
-              Employee
-            </MenuItem>
-            <MenuItem
-              sx={{ fontFamily: "var(--rubik-regular)" }}
-              value="recruiter"
-            >
-              Recruiter
-            </MenuItem>
-          </Select>
-        </FormControl>
+        <Select
+          onValueChange={(selectedValue) =>
+            formik.setFieldValue("role", selectedValue.toLowerCase())
+          }
+        >
+          <SelectTrigger className="w-{30}">
+            <SelectValue
+              placeholder={
+                formik.values.role
+                  ? formik.values.role.toUpperCase()
+                  : "Choose a role"
+              }
+            />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {["employee", "recruiter"].map((mode) => (
+                <SelectItem value={mode}>{mode.toUpperCase()}</SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <Input
           type="text"
           id="email"

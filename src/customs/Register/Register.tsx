@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Form } from "react-bootstrap";
 import "./Register.scss";
 import { useFormik } from "formik";
@@ -7,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { RegisterPageProps } from "./Register.model";
 import { useNavigate } from "react-router";
 import { useTheme } from "@/components/theme-provider";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
   const navigate = useNavigate();
@@ -16,7 +25,11 @@ const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
       firstName: "",
       lastName: "",
       email: "",
+      role: "employee",
       password: "",
+      orgId: "",
+      employeeId: "",
+      organization: "",
     },
     onSubmit: async (values) => {
       if (passwordMatched) {
@@ -26,13 +39,11 @@ const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
       }
     },
   });
-
+  console.log(formik.values.role);
   const [confPass, setConfPass] = useState("");
   const [verifyDisabled, setVerifyDisabled] = useState(false);
   const [warningText, setWarningText] = useState("");
   const [passwordMatched, setPasswordMatch] = useState(false);
-  // const [verifyResponse, setVerifyResponse] = useState<VerifyApiResponse>();
-  // const [submitResponse, setSubmitResponse] = useState<RegisterApiResponse>();
   const comparePasswordFields = useCallback(() => {
     if (formik.values.password !== confPass) {
       setWarningText("Passwords do not match!");
@@ -67,6 +78,63 @@ const Register = ({ onVerify, onSubmit }: RegisterPageProps) => {
           className="register__form-wrapper__form"
           onSubmit={formik.handleSubmit}
         >
+          <Select
+            onValueChange={(selectedValue) =>
+              formik.setFieldValue("role", selectedValue.toLowerCase())
+            }
+          >
+            <SelectTrigger className="w-{30}">
+              <SelectValue
+                placeholder={
+                  formik.values.role ? formik.values.role : "Choose a role"
+                }
+              />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {["employee", "recruiter"].map((mode) => (
+                  <SelectItem value={mode}>{mode.toUpperCase()}</SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {formik.values.role === "recruiter" && (
+            <>
+              <Form.Group>
+                <Input
+                  type="text"
+                  id="organization"
+                  name="organization"
+                  value={formik.values.organization}
+                  placeholder="Organization Name"
+                  onChange={formik.handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Input
+                  type="text"
+                  id="orgId"
+                  name="orgId"
+                  value={formik.values.orgId}
+                  placeholder="Organization ID"
+                  onChange={formik.handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Input
+                  type="text"
+                  id="employeeId"
+                  name="employeeId"
+                  value={formik.values.employeeId}
+                  placeholder="Employee ID"
+                  onChange={formik.handleChange}
+                  required
+                />
+              </Form.Group>
+            </>
+          )}
           <Form.Group>
             <Input
               type="text"

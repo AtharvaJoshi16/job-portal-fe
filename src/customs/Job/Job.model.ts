@@ -17,6 +17,7 @@ export interface JobProps {
   recruiter_id: string;
   onSaveJob?: (job_id: string, userId: string) => void;
   onRemoveSavedJob?: (job_id: string, userId: string) => void;
+  onDelete?: (job_id: string, recruiter_id: string) => void;
   bookmarks?: string[];
   appliedJobs?: AppliedJobs[];
   openings: number;

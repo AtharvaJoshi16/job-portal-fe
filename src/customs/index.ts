@@ -9,3 +9,4 @@ export { default as Job } from "./Job";
 export { default as Comments } from "./Comments";
 export { default as Jobs } from "./Jobs";
 export { default as Bookmarks } from "./Bookmarks";
+export { default as PostJob } from "./PostJob";

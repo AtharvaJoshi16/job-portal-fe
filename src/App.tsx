@@ -4,6 +4,7 @@ import {
   Home,
   Jobs,
   Layout,
+  PostJob,
   Profile,
   Register,
   ResetPassword,
@@ -82,6 +83,14 @@ export default function App() {
           element={
             <Layout>
               <Jobs />
+            </Layout>
+          }
+        />
+        <Route
+          path="/post-job"
+          element={
+            <Layout>
+              <PostJob />
             </Layout>
           }
         />

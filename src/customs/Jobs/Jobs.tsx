@@ -15,11 +15,11 @@ import { JobsProps } from "./Jobs.model";
 import { getAppliedJobs } from "../../apis/applyJob";
 import { searchJob } from "../../apis/searchJob";
 import { getFromStorage } from "@/utils/localStorage.utils";
+import { deleteJob } from "@/apis/deleteJob";
 
 const Jobs = ({ bookmark, applies }: JobsProps) => {
   const [jobs, setJobs] = useState<JobProps[]>();
-  const user = getFromStorage("user");
-  const userId = user?._id;
+  const { _id: userId, role } = getFromStorage("user");
   const [bookmarks, setBookmarks] = useState<string[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<AppliedJobs[] | undefined>();
   const { state } = useLocation();
@@ -48,15 +48,24 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
       if (state?.filter) {
         filterJobs(state?.filter, userId).then((resp) => setJobs(resp?.jobs));
       } else {
-        getJobs().then((resp) => setJobs(resp?.jobs));
+        role === "employee"
+          ? getJobs().then((resp) => setJobs(resp?.jobs))
+          : getJobs(userId).then((resp) => setJobs(resp?.jobs));
       }
     }
-  }, [state?.filter, bookmark, userId]);
+  }, [state?.filter, bookmark, userId, role]);
 
   useEffect(() => {
     setData();
     checkBookmark();
   }, [setData, checkBookmark]);
+
+  const handleJobDelete = (job_id: string, recruiter_id: string) => {
+    deleteJob(job_id, recruiter_id).then((resp) => {
+      setJobs(resp?.jobs);
+      alert(resp?.message);
+    });
+  };
 
   return !jobs ? (
     <CircularProgress
@@ -78,6 +87,7 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
                 variant={applies ? "apply" : "default"}
                 {...job}
                 onSaveJob={saveJob}
+                onDelete={() => handleJobDelete(job._id, userId)}
                 onRemoveSavedJob={removedSavedJob}
                 bookmarks={bookmarks}
                 appliedJobs={appliedJobs}
@@ -88,6 +98,7 @@ const Jobs = ({ bookmark, applies }: JobsProps) => {
               variant={applies ? "apply" : "default"}
               {...job}
               onSaveJob={saveJob}
+              onDelete={() => handleJobDelete(job._id, userId)}
               onRemoveSavedJob={removedSavedJob}
               bookmarks={bookmarks}
               appliedJobs={appliedJobs}

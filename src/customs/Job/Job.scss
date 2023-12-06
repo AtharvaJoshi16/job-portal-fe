@@ -147,7 +147,7 @@
 
     &__actions {
       display: flex;
-      margin: 0 15px;
+      margin: 0 15px 10px;
       justify-content: space-between;
       align-items: center;
       &__left {
@@ -157,7 +157,7 @@
 
       &__right {
         display: flex;
-        gap: 5px;
+        gap: 15px;
         align-items: center;
       }
 
