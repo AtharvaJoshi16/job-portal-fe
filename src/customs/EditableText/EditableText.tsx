@@ -9,6 +9,7 @@ export const EditableText = ({ initialText, field, userRole, onBlur }) => {
       role="textbox"
       onBlur={(e) => handleOnBlur(e.currentTarget.innerText)}
       contentEditable={userRole === "recruiter"}
+      suppressContentEditableWarning={true}
     >
       {initialText}
     </span>

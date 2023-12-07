@@ -24,7 +24,6 @@ export const returnDateDifference = (postedDate: string) => {
   let result = 0;
   let unit = "";
   const diff = new DateDiff(date2, date1);
-  console.log(diff.minutes(), diff.seconds());
   if (diff.years() >= 1) {
     result = diff.years();
     unit = "years";

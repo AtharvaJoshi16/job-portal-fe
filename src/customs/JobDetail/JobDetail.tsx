@@ -3,6 +3,7 @@ import { JobProps } from "../Job/Job.model";
 import { JobDetailProps } from "./JobDetail.model";
 import { useState, useEffect, useMemo } from "react";
 import { editJob, getJobByID, returnDateDifference } from "./utils";
+import RemoveIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 import "./JobDetail.scss";
 import {
   BookmarkCheck,
@@ -10,20 +11,28 @@ import {
   CheckCheck,
   ExternalLink,
   Loader2,
+  PlusCircle,
 } from "lucide-react";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import PsychologyIcon from "@mui/icons-material/Psychology";
 import StarsIcon from "@mui/icons-material/Stars";
 import RoomIcon from "@mui/icons-material/Room";
 import { Button } from "@/components/ui/button";
-import { Divider, CircularProgress } from "@mui/material";
+import { Divider, CircularProgress, Chip } from "@mui/material";
 import { getSavedJobs, removedSavedJob, saveJob } from "../Jobs/utils";
 import { applyJob, getAppliedJobs } from "../../apis/applyJob";
 import TrackStatus from "../TrackStatus/TrackStatus";
 import { getFromStorage } from "@/utils/localStorage.utils";
 import { EditableText } from "../EditableText/EditableText";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 const JobDetail = ({ jobData }: JobDetailProps) => {
-  const [job, setJob] = useState<JobProps>();
+  const [job, setJob] = useState<JobProps | null>();
   const { id } = useParams();
   const user = getFromStorage("user");
   const userId = user?._id;
@@ -31,6 +40,8 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
   const [applied, setApplied] = useState<boolean | undefined>();
   const [appliedStatus, setJobStatus] = useState("");
   const [appliedDate, setAppliedDate] = useState("");
+  const [chipText, setChipText] = useState("");
+  const [locationText, setLocText] = useState("");
   const dateDifference = job?.datePosted
     ? returnDateDifference(job?.datePosted)
     : "NA";
@@ -92,10 +103,35 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
     }
   };
 
-  const handleEditableBlur = async (value, field) => {
+  const handleEditJob = async (value, field) => {
     const payload = { ...job };
     payload[field] = value;
     await editJob?.(payload, userId);
+  };
+
+  const handleSkillAdd = async (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const inputValue: string = (event?.target as HTMLInputElement)?.value;
+    if (event.key === "Enter" && event.keyCode === 13) {
+      if (inputValue && job) {
+        const skillsToAdd = inputValue.split(",").filter((item) => {
+          if (item) {
+            return item.trim();
+          }
+        });
+        const currentSkills = [...job.skills];
+        const skills = [...currentSkills, ...skillsToAdd];
+        setJob({ ...job, skills });
+        await handleEditJob(skills, "skills");
+      }
+    }
+  };
+
+  const deleteSkillItem = async (index) => {
+    if (job) {
+      const skills = job.skills.filter((_item, idx) => idx !== index);
+      setJob({ ...job, skills });
+      await handleEditJob(skills, "skills");
+    }
   };
 
   return !job ? (
@@ -122,7 +158,7 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
                 userRole={user?.role}
                 field="jobRole"
                 initialText={job?.jobRole}
-                onBlur={handleEditableBlur}
+                onBlur={handleEditJob}
               />
             </span>
             <span className="job-detail__header-section__right__role-org__org">
@@ -139,7 +175,12 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
           <MapsHomeWorkIcon color="info" />
           <p className="job-detail__information__item__mode-ctc">
             <span className="job-detail__information__item__mode-ctc">
-              {job?.ctc}
+              <EditableText
+                userRole={user?.role}
+                field="ctc"
+                initialText={job?.ctc}
+                onBlur={handleEditJob}
+              />
             </span>
             <Divider
               light
@@ -151,7 +192,12 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
               }}
             />
             <span className="job-detail__information__item__mode-ctc">
-              {`${job?.workingMode}`}
+              <EditableText
+                userRole={user?.role}
+                field="workingMode"
+                initialText={job?.workingMode}
+                onBlur={handleEditJob}
+              />
             </span>
             <Divider
               light
@@ -193,54 +239,54 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
         <div className="job-detail__information__item">
           <StarsIcon color="info" />
           <p className="job-detail__information__item__text">
-            {job?.experienceLevel} Years
+            <EditableText
+              userRole={user?.role}
+              field="experienceLevel"
+              initialText={job?.experienceLevel}
+              onBlur={handleEditJob}
+            />{" "}
+            Years
           </p>
         </div>
         <div className="job-detail__information__item">
           <PsychologyIcon color="info" />
           <p className="job-detail__information__item__locations-text">
-            {job?.skills && job?.skills?.length <= 3
-              ? job?.skills?.map((skill, index) =>
-                  index !== job?.skills.length - 1 ? (
-                    <>
-                      <span>{skill}</span>
-                      <Divider
-                        light
-                        orientation="vertical"
-                        flexItem
-                        sx={{
-                          background: "black",
-                          border: "1px solid black",
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <span>{skill}</span>
-                  )
-                )
-              : job?.skills.slice(0, 3)?.map((skill, index) =>
-                  index !== job?.skills.slice(0, 3).length - 1 ? (
-                    <>
-                      <span>{skill}</span>
-                      <Divider
-                        light
-                        orientation="vertical"
-                        flexItem
-                        sx={{
-                          background: "black",
-                          border: "1px solid black",
-                        }}
-                      />
-                    </>
-                  ) : (
-                    <>
-                      <span>{skill}</span>
-                      <span className="job-detail__information__item__text--grey">{`+ ${
-                        job?.skills?.length - 3
-                      } more`}</span>
-                    </>
-                  )
-                )}
+            {job?.skills &&
+              job?.skills?.map((skill, index) => (
+                <Chip
+                  onDelete={() => deleteSkillItem(index)}
+                  deleteIcon={<RemoveIcon color="error" />}
+                  sx={{
+                    fontFamily: "var(--rubik-regular)",
+                    backgroundColor: "#cff3ff",
+                    color: "#042d4d",
+                    letterSpacing: "0.3px",
+                  }}
+                  label={skill}
+                  key={`${skill}-${index}`}
+                />
+              ))}
+            {user?.role === "recruiter" && (
+              <Popover>
+                <PopoverTrigger>
+                  <Button variant="ghost">
+                    <PlusCircle className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Label htmlFor="add-skill">
+                    Enter comma separated values
+                  </Label>
+                  <Input
+                    id="add-skill"
+                    placeholder="Add skill..."
+                    value={chipText}
+                    onChange={(e) => setChipText(e.target.value)}
+                    onKeyDown={handleSkillAdd}
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
           </p>
         </div>
       </div>

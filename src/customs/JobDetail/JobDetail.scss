@@ -82,6 +82,8 @@ p {
 
       &__locations-text {
         display: flex;
+        align-items: center;
+        flex-wrap: wrap;
         gap: 15px;
         font-weight: 600;
         letter-spacing: 0.5px;
