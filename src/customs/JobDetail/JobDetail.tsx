@@ -18,7 +18,7 @@ import PsychologyIcon from "@mui/icons-material/Psychology";
 import StarsIcon from "@mui/icons-material/Stars";
 import RoomIcon from "@mui/icons-material/Room";
 import { Button } from "@/components/ui/button";
-import { Divider, CircularProgress, Chip } from "@mui/material";
+import { Divider, CircularProgress, Chip, IconButton } from "@mui/material";
 import { getSavedJobs, removedSavedJob, saveJob } from "../Jobs/utils";
 import { applyJob, getAppliedJobs } from "../../apis/applyJob";
 import TrackStatus from "../TrackStatus/TrackStatus";
@@ -31,6 +31,10 @@ import {
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  AddCircleOutlineRounded,
+  RemoveCircleRounded,
+} from "@mui/icons-material";
 const JobDetail = ({ jobData }: JobDetailProps) => {
   const [job, setJob] = useState<JobProps | null>();
   const { id } = useParams();
@@ -126,11 +130,38 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
     }
   };
 
+  const handleLocationAdd = async (
+    event: React.KeyboardEvent<HTMLDivElement>
+  ) => {
+    const inputValue: string = (event?.target as HTMLInputElement)?.value;
+    if (event.key === "Enter" && event.keyCode === 13) {
+      if (inputValue && job) {
+        const locsToAdd = inputValue.split(",").filter((item) => {
+          if (item) {
+            return item.trim();
+          }
+        });
+        const currentLocs = [...job.locations];
+        const locations = [...currentLocs, ...locsToAdd];
+        setJob({ ...job, locations });
+        await handleEditJob(locations, "locations");
+      }
+    }
+  };
+
   const deleteSkillItem = async (index) => {
     if (job) {
       const skills = job.skills.filter((_item, idx) => idx !== index);
       setJob({ ...job, skills });
       await handleEditJob(skills, "skills");
+    }
+  };
+
+  const deleteLocationItem = async (index) => {
+    if (job) {
+      const locations = job.locations.filter((_item, idx) => idx !== index);
+      setJob({ ...job, locations });
+      await handleEditJob(locations, "locations");
     }
   };
 
@@ -217,7 +248,25 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
           <RoomIcon color="info" />
           <p className="job-detail__information__item__locations-text">
             {job?.locations?.map((loc, index) =>
-              index !== job?.locations.length - 1 ? (
+              user?.role === "recruiter" ? (
+                <Chip
+                  onDelete={() => deleteLocationItem(index)}
+                  deleteIcon={
+                    <RemoveCircleRounded
+                      sx={{ width: "18px", height: "18px" }}
+                      color="error"
+                    />
+                  }
+                  sx={{
+                    fontFamily: "var(--rubik-regular)",
+                    backgroundColor: "#cff3ff",
+                    color: "#042d4d",
+                    letterSpacing: "0.3px",
+                  }}
+                  label={loc}
+                  key={`${loc}-${index}`}
+                />
+              ) : index !== job?.locations.length - 1 ? (
                 <>
                   <span>{loc}</span>
                   <Divider
@@ -233,6 +282,29 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
               ) : (
                 <span>{loc}</span>
               )
+            )}
+            {user?.role === "recruiter" && (
+              <Popover>
+                <PopoverTrigger>
+                  <IconButton size="small">
+                    <AddCircleOutlineRounded
+                      sx={{ width: "18px", height: "18px" }}
+                    />
+                  </IconButton>
+                </PopoverTrigger>
+                <PopoverContent>
+                  <Label htmlFor="add-skill">
+                    Enter comma separated values
+                  </Label>
+                  <Input
+                    id="add-location"
+                    placeholder="Add locations..."
+                    value={locationText}
+                    onChange={(e) => setLocText(e.target.value)}
+                    onKeyDown={handleLocationAdd}
+                  />
+                </PopoverContent>
+              </Popover>
             )}
           </p>
         </div>
@@ -252,26 +324,46 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
           <PsychologyIcon color="info" />
           <p className="job-detail__information__item__locations-text">
             {job?.skills &&
-              job?.skills?.map((skill, index) => (
-                <Chip
-                  onDelete={() => deleteSkillItem(index)}
-                  deleteIcon={<RemoveIcon color="error" />}
-                  sx={{
-                    fontFamily: "var(--rubik-regular)",
-                    backgroundColor: "#cff3ff",
-                    color: "#042d4d",
-                    letterSpacing: "0.3px",
-                  }}
-                  label={skill}
-                  key={`${skill}-${index}`}
-                />
-              ))}
+              job?.skills?.map((skill, index) =>
+                user?.role === "recruiter" ? (
+                  <Chip
+                    onDelete={() => deleteSkillItem(index)}
+                    deleteIcon={
+                      <RemoveCircleRounded
+                        sx={{ width: "18px", height: "18px" }}
+                        color="error"
+                      />
+                    }
+                    sx={{
+                      fontFamily: "var(--rubik-regular)",
+                      backgroundColor: "#cff3ff",
+                      color: "#042d4d",
+                      letterSpacing: "0.3px",
+                    }}
+                    label={skill}
+                    key={`${skill}-${index}`}
+                  />
+                ) : (
+                  <Chip
+                    sx={{
+                      fontFamily: "var(--rubik-regular)",
+                      backgroundColor: "#cff3ff",
+                      color: "#042d4d",
+                      letterSpacing: "0.3px",
+                    }}
+                    label={skill}
+                    key={`${skill}-${index}`}
+                  />
+                )
+              )}
             {user?.role === "recruiter" && (
               <Popover>
                 <PopoverTrigger>
-                  <Button variant="ghost">
-                    <PlusCircle className="h-4 w-4" />
-                  </Button>
+                  <IconButton size="small">
+                    <AddCircleOutlineRounded
+                      sx={{ width: "18px", height: "18px" }}
+                    />
+                  </IconButton>
                 </PopoverTrigger>
                 <PopoverContent>
                   <Label htmlFor="add-skill">
@@ -331,7 +423,6 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
         </div>
       ) : (
         <div className="job-detail__actions">
-          <Button variant="outline">Edit</Button>
           <Button variant="destructive">Delete</Button>
         </div>
       )}
@@ -345,11 +436,30 @@ const JobDetail = ({ jobData }: JobDetailProps) => {
       <div className="job-detail__description">
         <p className="job-detail__description__heading">Job Description</p>
         <div className="job-detail__description__about">
-          {job?.description?.about}
+          {user?.role === "recruiter" ? (
+            <EditableText
+              element="div"
+              userRole={user?.role}
+              field="description.about"
+              initialText={job?.description?.about}
+              onBlur={handleEditJob}
+            />
+          ) : (
+            job?.description?.about
+          )}
         </div>
         <div className="job-detail__description__lists">
           <p className="job-detail__description__subheading">
             Responsibilities
+            {user?.role === "recruiter" && (
+              <span>
+                <IconButton size="small">
+                  <AddCircleOutlineRounded
+                    sx={{ width: "18px", height: "18px" }}
+                  />
+                </IconButton>
+              </span>
+            )}
           </p>
           <ul className="job-detail__description__lists__list">
             {job?.description?.responsibilities?.map((item) => (

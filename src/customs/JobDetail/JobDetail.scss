@@ -4,6 +4,13 @@ p {
   margin: 0;
 }
 
+[contenteditable] {
+  &:focus {
+    outline: 2px solid rgb(0, 86, 156);
+    border-radius: 2px;
+  }
+}
+
 .job-detail {
   margin: 30px 40px;
   padding: 20px 40px;
@@ -151,6 +158,20 @@ p {
 
     &--not-applied {
       display: none;
+    }
+  }
+
+  .css-qm84nh-MuiButtonBase-root-MuiChip-root {
+    .MuiChip-deleteIcon {
+      color: rgb(206, 0, 0);
+
+      &:hover {
+        color: rgb(180, 0, 0);
+      }
+
+      &:active {
+        color: rgb(143, 0, 0);
+      }
     }
   }
 }
